@@ -122,6 +122,7 @@ venv.bak/
 # External Programs
 *.exe
 *.dat.allow
+*.svg
 
 # Folders
 /supersonic_morphing/panair_files/*
