@@ -118,4 +118,7 @@ venv.bak/
 *.sim
 *.prt
 *.for
+*.exe
+*.dat.allow
+
 

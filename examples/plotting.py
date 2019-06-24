@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pickle
 
-f = open('loudness_big_prestrain2.p', 'rb')
+f = open('../data/loudness/loudness_big_front-2.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -10,7 +10,9 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
-f = open('outputs_big_prestrain2.p', 'rb')  #
+# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+f = open('../data/abaqus_outputs/outputs_big_front-2_ux.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
 

@@ -101,7 +101,9 @@ all_output = []
 mach = 1.6
 nx = 50
 ny = 20
-f = open('outputs_big_prestrain2.p', 'rb')  #
+# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+f = open('../data/abaqus_outputs/outputs_big_front-2_ux.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = data['COORD']['Step-2'][0].T
@@ -142,10 +144,10 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('loudness_big_prestrain22.p', 'wb')
+f = open('../data/loudness/loudness_new_front-2.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
-f = open('output.p', 'wb')
+f = open('../data/abaqus_outputs/output.p', 'wb')
 pickle.dump(all_output, f)
 f.close()
 plt.show()
