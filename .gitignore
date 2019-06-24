@@ -118,7 +118,13 @@ venv.bak/
 *.sim
 *.prt
 *.for
+
+# External Programs
 *.exe
 *.dat.allow
+
+# Folders
+/supersonic_morphing/panair_files/*
+/supersonic_morphing/sBOOM/*
 
 
