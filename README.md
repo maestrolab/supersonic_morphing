@@ -7,4 +7,5 @@ Installation:
 Dependencies:
   - usuaero/rapidboom
   - usuaero/pyldb
+  - usuaero/panairwrapper
   - matplotlib
