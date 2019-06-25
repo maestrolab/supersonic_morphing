@@ -103,7 +103,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_big_front-2_ux.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = data['COORD']['Step-2'][0].T
@@ -133,7 +133,7 @@ for step in steps:
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
         U3 = - U3
-        # Calculate morphed area
+        # Calculate morphed area (FIXME?)
         X = np.concatenate((X[:-1], X[:-1], X+U1, X[1:]))
         Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + U2 + .5, Y[1:] + dY + .5))
         Z = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
@@ -144,7 +144,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_new_front-2.p', 'wb')
+f = open('../data/loudness/loudness_small_simple.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')

@@ -127,5 +127,6 @@ venv.bak/
 # Folders
 /supersonic_morphing/panair_files/*
 /supersonic_morphing/sBOOM/*
+/abaqus_files/old_tutorials/liquid_metal/*
 
 

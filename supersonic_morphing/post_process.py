@@ -121,7 +121,7 @@ def findOutputSet(ModelName,StepName,InstanceName,SetName, Output='COORD'):
     
 if __name__ == '__main__':
     import pickle as p
-    ModelName = 'fp_05_simple_front-al'
+    ModelName = 'small_simple_1'
     Steps = ['Step-1', 'Step-2', 'Step-3']#, 'Step-4', 'Step-5', 'Step-6', 'Step-7'] 
     InstanceName = 'Part-3-1'
     SetName = 'Whole-surf'
@@ -136,7 +136,7 @@ if __name__ == '__main__':
                                          SetName, outputName)
             output[outputName][StepName] = output_i
             output['Time'][StepName] = time                                             
-    f = open('outputs_big_front-al.p', 'wb')
+    f = open('outputs_small_simple.p', 'wb')
     p.dump(output, f)
     f.close()
         
