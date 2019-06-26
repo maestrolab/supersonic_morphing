@@ -12,88 +12,6 @@ from viewerModules import *
 
 import numpy as np
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def get_displacement(odbName, StepName, components = [2]):
-
-    """
-    This ODB reading script does the following:
-    -Retrieves the displacement at TIPNODE
-    """
-
-    # Open the output database.
-    print 'Made it in'
-#    odbName = ModelName+'.odb'
-#    print odbName
-    odb = visualization.openOdb(odbName)
-    lastFrame = odb.steps[StepName].frames[-1]
-    print 'odb open'
-
-
-    # Selecting the node(s) to be queried
-    pTip = odb.rootAssembly.nodeSets['TIPNODE']
-
-    # Retrieve Y-displacements at the splines/connectors
-    print 'Retrieving ALL final displacements at ALL points'
-    dispField = lastFrame.fieldOutputs['U']
-
-    print 'Retrieving ALL displacements at TIPNODE'
-    dFieldpTip = dispField.getSubset(region=pTip)
-
-    print 'Retrieving only U2 at TIPNODE'
-    #Note, U1=data[0], U2=data[1], U3=data[2]
-    disppTip = []
-    for component in components:
-        disppTip.append(dFieldpTip.values[0].data[component-1])
-    odb.close()
-    if len(disppTip) == 1:
-        return disppTip[0]
-    else:
-        return disppTip
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def get_coordinates_linear(ModelName,StepName,InstanceName,SetName):
-
-    """
-    This ODB reading script does the following:
-    -Retrieves the coordinates at SetName for a LINEAR ANALYSIS
-	
-	DO NOT USE THIS WHEN NLGEOM IS ON! IT WILL DOUBLE DIP!
-    """
-    Coordinates={'x':[],'y':[]}
-    # Open the output database.
-    print 'Made it in'
-    odbName = ModelName+'.odb'
-#    print odbName
-    odb = visualization.openOdb(odbName)
-    lastFrame = odb.steps[StepName].frames[-1]
-    print 'odb open'
-
-    # Selecting the node(s) to be queried
-    coordset = odb.rootAssembly.instances[InstanceName.upper()].nodeSets[SetName.upper()]
-
-    # Retrieve Y-displacements at the splines/connectors
-    print 'Retrieving ALL final displacements at ALL points'
-    dispField = lastFrame.fieldOutputs['U']
-
-    print 'Retrieving ALL displacements at TIPNODE'
-    dFieldpTip = dispField.getSubset(region=coordset)
-
-    print 'Retrieving ALL final displacements at ALL points'
-    coordField = lastFrame.fieldOutputs['COORD']
-
-    print 'Retrieving ALL displacements at Set'
-    cFieldpTip = coordField.getSubset(region=coordset)
-
-    print 'Retrieving coordinates at sets at Set'
-    #Note, U1=data[0], U2=data[1], U3=data[2]
-    for i in range(len(dFieldpTip.values)):
-        Coordinates['x'].append(cFieldpTip.values[i].data[0]+dFieldpTip.values[i].data[0])
-        Coordinates['y'].append(cFieldpTip.values[i].data[1]+dFieldpTip.values[i].data[1])
-    odb.close()
-    return Coordinates
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def findOutputSet(ModelName,StepName,InstanceName,SetName, Output='COORD'):
     output=[]
     time = []
@@ -122,21 +40,32 @@ def findOutputSet(ModelName,StepName,InstanceName,SetName, Output='COORD'):
 if __name__ == '__main__':
     import pickle as p
     ModelName = 'small_simple_1'
-    Steps = ['Step-1', 'Step-2', 'Step-3']#, 'Step-4', 'Step-5', 'Step-6', 'Step-7'] 
+    Steps = ['Step-1', 'Step-2', 'Step-3', 'Step-4', 'Step-5']#, 'Step-6', 'Step-7'] 
     InstanceName = 'Part-3-1'
-    SetName = 'Whole-surf'
+    SetName1 = 'Whole-surf'
+    SetName2 = 'Middle-point'
     outputNames = ['NT11', 'COORD', 'E', 'U', 'SDV2']
     coordinates = {}
     temperatures = {}
     output = {'Time':{}}
+    mid_output = {'Time':{}}
     for outputName in outputNames:
         output[outputName] = {}
+        mid_output[outputName] = {}
         for StepName in Steps:
             output_i, time = findOutputSet(ModelName,StepName,InstanceName,
-                                         SetName, outputName)
+                                         SetName1, outputName)
+            output_i2, time2 = findOutputSet(ModelName,StepName,InstanceName,
+                                         SetName2, outputName)
             output[outputName][StepName] = output_i
-            output['Time'][StepName] = time                                             
-    f = open('outputs_small_simple.p', 'wb')
+            mid_output[outputName][StepName] = output_i2
+            output['Time'][StepName] = time
+            mid_output['Time'][StepName] = time2
+
+    f = open('outputs_small_simple_test.p', 'wb')
     p.dump(output, f)
+    f.close()
+    f = open('mid_outputs_small_simple_test.p', 'wb')
+    p.dump(mid_output, f)
     f.close()
         

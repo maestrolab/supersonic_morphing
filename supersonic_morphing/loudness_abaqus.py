@@ -77,7 +77,7 @@ def mach_cone(y, MACH, y0):
 def calculate_loudness(bump_function):
     # Bump design variables
     location = 12.5
-    width = 2
+    width = 2 #FIXME ?
     # Flight conditions inputs
     alt_ft = 50000.
 
@@ -103,7 +103,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = data['COORD']['Step-2'][0].T
@@ -117,18 +117,18 @@ z_min, z_max = min(Z), max(Z)
 
 # calculate original area
 dY = (max(Y) - min(Y))
-X0 = np.concatenate((X[:-1], X[:-1], X + U1, X[1:]))
+X0 = np.concatenate((X[:-1], X[:-1], X + U1, X[1:])) #FIXME?
 Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2, Y[1:] + dY + .5))
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
 A0 = A0[0]
-steps = ['Step-2', 'Step-3']
+steps = ['Step-2']#, 'Step-3']
 loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-    for i in range(len(data['COORD'][step])):
+    for i in range(13):#range(len(data['COORD'][step])):
         Z, X, Y = data['COORD'][step][i].T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
@@ -144,7 +144,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test2_1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -154,8 +154,10 @@ plt.show()
 plt.figure()
 plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], label='Heating')
+'''
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
+'''
 plt.legend()
 plt.show()
 
@@ -178,3 +180,6 @@ ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.show()
+
+with open('../data/images/FigureObject.p', 'wb') as fid:
+    pickle.dump(ax, fid)
