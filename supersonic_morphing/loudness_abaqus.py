@@ -128,7 +128,7 @@ loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-    for i in range(13):#range(len(data['COORD'][step])):
+    for i in range(len(data['COORD'][step])):
         Z, X, Y = data['COORD'][step][i].T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
@@ -144,7 +144,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test2_1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test3_3.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -165,7 +165,6 @@ plt.show()
 y0_list = np.linspace(-1.5, 2, ny)
 A, output = calculating_area(X, Y, Z, y0_list, nx)
 A = A - A0
-
 plt.figure()
 plt.plot(y0_list, A)
 plt.ylabel('Area along Mach Cone')
@@ -174,12 +173,25 @@ plt.show()
 
 fig = plt.figure()
 ax = Axes3D(fig)
-# ax.scatter(X, Y, Z, c='b')
+ax.scatter(X, Y, Z, c='b')
 x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.show()
 
-with open('../data/images/FigureObject.p', 'wb') as fid:
-    pickle.dump(ax, fid)
+# 3D components for display in plotting.py
+pic_outputs = {}
+pic_outputs['x'] = x
+pic_outputs['y'] = y 
+pic_outputs['z'] = z
+pic_outputs['X'] = X
+pic_outputs['Y'] = Y 
+pic_outputs['Z'] = Z
+pic_outputs['A'] = A
+pic_outputs['y0_list'] = y0_list
+pic_outputs['output'] = output
+
+with open('../data/images/3Dpicture_test3_3.p', 'wb') as fid:
+    pickle.dump(pic_outputs, fid)
+

@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import pickle
 
-f = open('../data/loudness/loudness_small_simple_test2_1.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_test3_3.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -74,9 +75,9 @@ plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
 '''
 plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], 'r', label='Heating')
-'''
 plt.legend()
 plt.show()
+'''
 '''
 fig, ax1 = plt.subplots()
 ax2 = ax1.twinx()
@@ -93,7 +94,33 @@ ax1.set_ylabel('Displacements (m)', color='b')
 ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
+# Reproducing Pictures from loudness to check calculations
+with open('../data/images/3Dpicture_test3_3.p', 'rb') as fid:
+    pic_data = pickle.load(fid)
+    
+x = pic_data['x']
+y = pic_data['y']
+z = pic_data['z']
+X = pic_data['X']
+Y = pic_data['Y']
+Z = pic_data['Z']
+A = pic_data['A']
+y0_list = pic_data['y0_list']
+output = pic_data['output']
+nx = 50
+ny = 20
 
-with open('../data/images/FigureObject.p', 'rb') as fid:
-    ax = pickle.load(fid)
-ax.show()
+plt.figure()
+plt.plot(y0_list, A)
+plt.ylabel('Area along Mach Cone')
+plt.xlabel('Distance along aircraft')
+plt.show()
+
+fig = plt.figure()
+ax = Axes3D(fig)
+#ax.scatter(X, Y, Z, c='b')
+x, y, z = output.reshape(nx*ny, 3).T
+ax.scatter(x, y, z, c='r')
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.show()
