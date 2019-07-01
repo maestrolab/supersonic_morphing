@@ -39,7 +39,9 @@ def calculating_area(X, Y, Z, y0_list, nx):
         np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), rescale=True)
     # def geometry(xi):
     #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi, method='cubic')
-    x_solution = np.linspace(x_min, x_max, nx)
+    # change x to theta for more even spacing
+    theta = np.linspace(0, np.pi/2, nx)
+    x_solution = np.sin(theta) * 0.6
     y_solution = np.zeros(x_solution.shape)
     z_solution = np.zeros(x_solution.shape)
     output = []
@@ -111,6 +113,8 @@ U3, U1, U2 = data['U']['Step-2'][0].T
 Z = -Z
 U3 = -U3
 
+xo, yo, zo = X, Y, Z
+
 x_min, x_max = min(X), max(X)
 y_min, y_max = min(Y), max(Y)
 z_min, z_max = min(Z), max(Z)
@@ -128,7 +132,7 @@ loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-    for i in range(len(data['COORD'][step])):
+    for i in range(13): #range(len(data['COORD'][step])):
         Z, X, Y = data['COORD'][step][i].T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
@@ -144,7 +148,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test3_3.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test4_3.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -189,9 +193,15 @@ pic_outputs['X'] = X
 pic_outputs['Y'] = Y 
 pic_outputs['Z'] = Z
 pic_outputs['A'] = A
+pic_outputs['U1'] = U1
+pic_outputs['U2'] = U2
+pic_outputs['U3'] = U3
 pic_outputs['y0_list'] = y0_list
 pic_outputs['output'] = output
+pic_outputs['xo'] = xo
+pic_outputs['yo'] = yo
+pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_test3_3.p', 'wb') as fid:
+with open('../data/images/3Dpicture_test4_3.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
 
