@@ -3,7 +3,7 @@ import pickle
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve, minimize, differential_evolution
-from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator
+from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator, NearestNDInterpolator
 from scipy.spatial import Delaunay
 
 from rapidboom import AxieBump
@@ -35,7 +35,7 @@ def calculating_area(X, Y, Z, y0_list, nx):
     def diff(y, MACH, y0, x):
         return abs(mach_cone(y, MACH, y0) - geometry([y, x]))
 
-    geometry = LinearNDInterpolator(
+    geometry = CloughTocher2DInterpolator(
         np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), rescale=True)
     # def geometry(xi):
     #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi, method='cubic')
@@ -105,11 +105,12 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_test_ux.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = data['COORD']['Step-2'][0].T
-U3, U1, U2 = data['U']['Step-2'][0].T
+#U3, U1, U2 = data['U']['Step-2'][0].T
+U3, U1, U2 = 0, 0, 0
 Z = -Z
 U3 = -U3
 
@@ -134,7 +135,8 @@ for step in steps:
     loudness[step] = []
     for i in range(13): #range(len(data['COORD'][step])):
         Z, X, Y = data['COORD'][step][i].T
-        U3, U1, U2 = data['U'][step][i].T
+        #U3, U1, U2 = data['U'][step][i].T
+        U3, U1, U2 = 0, 0, 0
         Z = -Z
         U3 = - U3
         # Calculate morphed area (FIXME?)
@@ -148,7 +150,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test4_3.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test5_6_ux.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -202,6 +204,6 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_test4_3.p', 'wb') as fid:
+with open('../data/images/3Dpicture_test5_6_ux.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
-
+    

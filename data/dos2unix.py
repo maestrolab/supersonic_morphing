@@ -3,8 +3,8 @@
 convert dos linefeeds (crlf) to unix (lf)
 usage: dos2unix.py
 """
-original = "./abaqus_outputs/outputs_big_front-2.p"
-destination = "./abaqus_outputs/outputs_big_front-2_ux.p"
+original = "./abaqus_outputs/mid_outputs_small_simple_test.p"
+destination = "./mid_outputs_small_simple_test_ux.p"
 
 content = ''
 outsize = 0
