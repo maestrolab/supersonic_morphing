@@ -3,7 +3,7 @@ import pickle
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve, minimize, differential_evolution
-from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator
+from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator, NearestNDInterpolator
 from scipy.spatial import Delaunay
 
 from rapidboom import AxieBump
@@ -105,11 +105,18 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_test_ux.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
+<<<<<<< HEAD
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
+=======
+print(np.unique(data['COORD']['Step-2'][0], axis=1))
+Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
+#Z, X, Y = data['COORD']['Step-2'][0].T
+>>>>>>> 447ba5deb91b40d9caa97b456342634059510125
 U3, U1, U2 = data['U']['Step-2'][0].T
+#U3, U1, U2 = 0, 0, 0
 Z = -Z
 U3 = -U3
 
@@ -132,6 +139,7 @@ loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
+<<<<<<< HEAD
     for i in range(len(data['COORD'][step])):
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
@@ -149,6 +157,28 @@ for step in steps:
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
 f = open('../data/loudness/loudness_small_simple_test6_1.p', 'wb')
+=======
+    #for i in range(1): #range(len(data['COORD'][step])):
+    i = 7
+    Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
+    #Z, X, Y = data['COORD'][step][i].T
+    U3, U1, U2 = data['U'][step][i].T
+    #U3, U1, U2 = 0, 0, 0
+    Z = -Z
+    U3 = - U3
+    # Calculate morphed area (FIXME?)
+    X = np.concatenate((X[:-1], X[:-1], X+U1, X[1:]))
+    Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + U2 + .5, Y[1:] + dY + .5))
+    Z = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
+
+    loudness_i = calculate_loudness(lambda xx: calculate_radius(xx-12.5,
+                                                                X=X, Y=Y,
+                                                                Z=Z, nx=nx,
+                                                                A0=A0))
+    loudness[step].append(loudness_i)
+    print(step, i, loudness_i)
+f = open('../data/loudness/loudness_small_simple_test5_6_ux.p', 'wb')
+>>>>>>> 447ba5deb91b40d9caa97b456342634059510125
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -177,7 +207,7 @@ plt.show()
 
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.scatter(X, Y, Z, c='b')
+#ax.scatter(X, Y, Z, c='b')
 x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
@@ -202,6 +232,10 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
+<<<<<<< HEAD
 with open('../data/images/3Dpicture_test6_1.p', 'wb') as fid:
+=======
+with open('../data/images/3Dpicture_test5_6_ux.p', 'wb') as fid:
+>>>>>>> 447ba5deb91b40d9caa97b456342634059510125
     pickle.dump(pic_outputs, fid)
-
+    

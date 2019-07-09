@@ -5,7 +5,11 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 
+<<<<<<< HEAD
 f = open('../data/loudness/loudness_small_simple_test6_1.p', 'rb')
+=======
+f = open('../data/loudness/loudness_small_simple_test5_5_ux.p', 'rb')
+>>>>>>> 447ba5deb91b40d9caa97b456342634059510125
 loudness = pickle.load(f)
 f.close()
 
@@ -15,10 +19,10 @@ f.close()
 
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_test_ux.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_test_ux.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
@@ -97,7 +101,11 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
+<<<<<<< HEAD
 with open('../data/images/3Dpicture_test6_1.p', 'rb') as fid:
+=======
+with open('../data/images/3Dpicture_test5_5_ux.p', 'rb') as fid:
+>>>>>>> 447ba5deb91b40d9caa97b456342634059510125
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -136,7 +144,7 @@ plt.show()
 
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.scatter(X, Y, Z, c='b')
+#ax.scatter(X, Y, Z, c='b')
 x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
