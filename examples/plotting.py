@@ -5,7 +5,7 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 
-f = open('../data/loudness/loudness_small_simple_test4_2.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_test6_1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -97,7 +97,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_test4_2.p', 'rb') as fid:
+with open('../data/images/3Dpicture_test6_1.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -153,10 +153,10 @@ Z = np.reshape(z, (20,50))
 #ax.plot_surface(X, Y, Z)
 # xx, yy, zz = np.meshgrid(x,y,z)
 # use xyz points from outputs file (before processing) for points
-print(xo.shape, yo.shape, zo.shape, U.shape)
+#print(xo.shape, yo.shape, zo.shape, U.shape)
 grid_u = griddata(np.array([xo,yo,zo]).T, U, np.array([x,y,z]).T, fill_value=0, rescale=True, method='nearest')
 print('hi')
-print(grid_u)
+#print(grid_u)
 grid = np.array(grid_u)
 grid = grid/grid.max()
 # print(grid)
