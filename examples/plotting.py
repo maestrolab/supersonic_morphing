@@ -164,3 +164,4 @@ m = cm.ScalarMappable(cmap=cm.jet)
 m.set_array(np.reshape(np.array(grid_u), (20,50)))
 fig.colorbar(m)
 plt.show()
+#test
