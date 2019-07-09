@@ -105,7 +105,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test_ux.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -133,7 +133,8 @@ loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-    for i in range(len(data['COORD'][step])):
+    for i in range(10,11):#range(len(data['COORD'][step])):
+    #i = 18
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
@@ -149,7 +150,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test6_1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test6_6.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -203,5 +204,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_test6_1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_test6_6.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
