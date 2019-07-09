@@ -5,11 +5,7 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 
-<<<<<<< HEAD
 f = open('../data/loudness/loudness_small_simple_test6_1.p', 'rb')
-=======
-f = open('../data/loudness/loudness_small_simple_test5_5_ux.p', 'rb')
->>>>>>> 447ba5deb91b40d9caa97b456342634059510125
 loudness = pickle.load(f)
 f.close()
 
@@ -41,7 +37,7 @@ for step in steps:
 
 label2='Cooling'
 label3='Heating'
-'''        
+'''
 plt.figure()
 plt.plot(data['Time']['Step-2'],
          loudness['Step-2'], 'b', label='Cooling')
@@ -101,11 +97,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-<<<<<<< HEAD
 with open('../data/images/3Dpicture_test6_1.p', 'rb') as fid:
-=======
-with open('../data/images/3Dpicture_test5_5_ux.p', 'rb') as fid:
->>>>>>> 447ba5deb91b40d9caa97b456342634059510125
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
