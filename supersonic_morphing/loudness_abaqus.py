@@ -35,7 +35,7 @@ def calculating_area(X, Y, Z, y0_list, nx):
     def diff(y, MACH, y0, x):
         return abs(mach_cone(y, MACH, y0) - geometry([y, x]))
 
-    geometry = CloughTocher2DInterpolator(
+    geometry = LinearNDInterpolator(
         np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), rescale=True)
     # def geometry(xi):
     #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi, method='cubic')
@@ -107,10 +107,11 @@ ny = 20
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
 f = open('../data/abaqus_outputs/outputs_small_simple_test_ux.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
-
-Z, X, Y = data['COORD']['Step-2'][0].T
-#U3, U1, U2 = data['U']['Step-2'][0].T
-U3, U1, U2 = 0, 0, 0
+print(np.unique(data['COORD']['Step-2'][0], axis=1))
+Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
+#Z, X, Y = data['COORD']['Step-2'][0].T
+U3, U1, U2 = data['U']['Step-2'][0].T
+#U3, U1, U2 = 0, 0, 0
 Z = -Z
 U3 = -U3
 
@@ -122,7 +123,7 @@ z_min, z_max = min(Z), max(Z)
 
 # calculate original area
 dY = (max(Y) - min(Y))
-X0 = np.concatenate((X[:-1], X[:-1], X + U1, X[1:])) #FIXME?
+X0 = np.concatenate((X[:-1], X[:-1], X + U1, X[1:]))
 Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2, Y[1:] + dY + .5))
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
@@ -133,23 +134,25 @@ loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-    for i in range(13): #range(len(data['COORD'][step])):
-        Z, X, Y = data['COORD'][step][i].T
-        #U3, U1, U2 = data['U'][step][i].T
-        U3, U1, U2 = 0, 0, 0
-        Z = -Z
-        U3 = - U3
-        # Calculate morphed area (FIXME?)
-        X = np.concatenate((X[:-1], X[:-1], X+U1, X[1:]))
-        Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + U2 + .5, Y[1:] + dY + .5))
-        Z = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
+    #for i in range(1): #range(len(data['COORD'][step])):
+    i = 7
+    Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
+    #Z, X, Y = data['COORD'][step][i].T
+    U3, U1, U2 = data['U'][step][i].T
+    #U3, U1, U2 = 0, 0, 0
+    Z = -Z
+    U3 = - U3
+    # Calculate morphed area (FIXME?)
+    X = np.concatenate((X[:-1], X[:-1], X+U1, X[1:]))
+    Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + U2 + .5, Y[1:] + dY + .5))
+    Z = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 
-        loudness_i = calculate_loudness(lambda xx: calculate_radius(xx-12.5,
-                                                                    X=X, Y=Y,
-                                                                    Z=Z, nx=nx,
-                                                                    A0=A0))
-        loudness[step].append(loudness_i)
-        print(step, i, loudness_i)
+    loudness_i = calculate_loudness(lambda xx: calculate_radius(xx-12.5,
+                                                                X=X, Y=Y,
+                                                                Z=Z, nx=nx,
+                                                                A0=A0))
+    loudness[step].append(loudness_i)
+    print(step, i, loudness_i)
 f = open('../data/loudness/loudness_small_simple_test5_6_ux.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
@@ -179,7 +182,7 @@ plt.show()
 
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.scatter(X, Y, Z, c='b')
+#ax.scatter(X, Y, Z, c='b')
 x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
