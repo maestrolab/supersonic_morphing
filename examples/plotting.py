@@ -5,7 +5,7 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 
-f = open('../data/loudness/loudness_small_simple_test6_6.p', 'rb')
+f = open('../data/loudness/loudness_small_bigHmax_1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -15,10 +15,10 @@ f.close()
 
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_bigHmax.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/mid_outputs_small_bigHmax.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
@@ -72,13 +72,13 @@ plt.show()
 
 
 plt.figure()
-plt.plot(temperatures['Step-2'][10:11],#[:len(loudness['Step-2'])],
-         loudness['Step-2'], '.b', label='Cooling')
-'''
+plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
+         loudness['Step-2'], 'b', label='Cooling')
+
 plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], 'r', label='Heating')
 plt.legend()
-'''
+
 #plt.show()
 
 '''
@@ -98,7 +98,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_test6_6.p', 'rb') as fid:
+with open('../data/images/3Dpicture_bigHmax_1.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -164,4 +164,3 @@ m = cm.ScalarMappable(cmap=cm.jet)
 m.set_array(np.reshape(np.array(grid_u), (20,50)))
 fig.colorbar(m)
 plt.show()
-#test

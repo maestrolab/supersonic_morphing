@@ -36,11 +36,11 @@ def findOutputSet(ModelName,StepName,InstanceName,SetName, Output='COORD'):
     odb.close()
 
     return np.array(output), np.array(time)
-    
+
 if __name__ == '__main__':
     import pickle as p
     ModelName = 'small_simple_1'
-    Steps = ['Step-1', 'Step-2', 'Step-3', 'Step-4', 'Step-5']#, 'Step-6', 'Step-7'] 
+    Steps = ['Step-1', 'Step-2', 'Step-3', 'Step-4', 'Step-5']#, 'Step-6', 'Step-7']
     InstanceName = 'Part-3-1'
     SetName1 = 'Whole-surf'
     SetName2 = 'Middle-point'
@@ -68,4 +68,3 @@ if __name__ == '__main__':
     f = open('mid_outputs_small_simple_test.p', 'wb')
     p.dump(mid_output, f)
     f.close()
-        
