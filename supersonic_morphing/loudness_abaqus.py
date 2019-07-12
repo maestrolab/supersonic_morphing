@@ -6,7 +6,7 @@ from scipy.optimize import fsolve, minimize, differential_evolution
 from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator, NearestNDInterpolator
 from scipy.spatial import Delaunay
 
-from rapidboom import AxieBump
+from rapidboom import AxieBump, EquivArea
 from weather.boom import read_input
 from weather.scraper.twister import process_data
 import platform
@@ -39,7 +39,7 @@ def calculating_area(X, Y, Z, y0_list, nx):
         np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), rescale=True)
     # def geometry(xi):
     #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi, method='cubic')
-    # change x to theta for more even spacing
+    # change x to theta for even spacing
     theta = np.linspace(0, np.pi/2, nx)
     x_solution = np.sin(theta) * 0.6
     y_solution = np.zeros(x_solution.shape)
@@ -79,7 +79,7 @@ def mach_cone(y, MACH, y0):
 def calculate_loudness(bump_function):
     # Bump design variables
     location = 12.5
-    width = 2 #FIXME ?
+    width = 2
     # Flight conditions inputs
     alt_ft = 50000.
 
@@ -105,7 +105,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_bigHmax.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -128,7 +128,7 @@ Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
 A0 = A0[0]
-steps = ['Step-2', 'Step-3']
+steps = ['Step-2']#, 'Step-3']
 loudness = {}
 plt.figure()
 for step in steps:
@@ -150,7 +150,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_bigHmax_1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test8_1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -160,10 +160,10 @@ plt.show()
 plt.figure()
 plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], label='Heating')
-
+'''
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
-
+'''
 plt.legend()
 plt.show()
 
@@ -204,5 +204,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_bigHmax_1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_test8_1.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
