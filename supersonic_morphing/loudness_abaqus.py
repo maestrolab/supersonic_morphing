@@ -6,7 +6,7 @@ from scipy.optimize import fsolve, minimize, differential_evolution
 from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator, NearestNDInterpolator
 from scipy.spatial import Delaunay
 
-from rapidboom import AxieBump, EquivArea
+from rapidboom import AxieBump
 from weather.boom import read_input
 from weather.scraper.twister import process_data
 import platform
