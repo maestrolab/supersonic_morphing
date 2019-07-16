@@ -78,7 +78,8 @@ def mach_cone(y, MACH, y0):
 
 def calculate_loudness(bump_function):
     # Bump design variables
-    location = 12.5
+    x1 = 0.6/np.tan(np.arcsin(1/1.6))
+    location = 12.5 + x1
     width = 2
     # Flight conditions inputs
     alt_ft = 50000.
@@ -92,7 +93,7 @@ def calculate_loudness(bump_function):
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmosphere
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom')
-    axiebump.MESH_COARSEN_TOL = 0.00045
+    axiebump.MESH_COARSEN_TOL = 0.00045  # 0.000035
     axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
 
@@ -150,7 +151,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test8_1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test9_2.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -204,5 +205,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_test8_1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_test9_2.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)

@@ -5,7 +5,7 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 
-f = open('../data/loudness/loudness_small_simple_test8_1.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_test9_2.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -24,7 +24,7 @@ f.close()
 
 displacements = {}
 temperatures = {}
-steps = ['Step-2', 'Step-3']
+steps = ['Step-2']#, 'Step-3']
 U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
 for step in steps:
     displacements[step] = []
@@ -98,7 +98,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_test8_1.p', 'rb') as fid:
+with open('../data/images/3Dpicture_test9_2.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
