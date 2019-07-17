@@ -24,7 +24,7 @@ f.close()
 
 displacements = {}
 temperatures = {}
-steps = ['Step-2']#, 'Step-3']
+steps = ['Step-2', 'Step-3']
 U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
 for step in steps:
     displacements[step] = []

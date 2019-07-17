@@ -93,7 +93,7 @@ def calculate_loudness(bump_function):
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmosphere
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom')
-    axiebump.MESH_COARSEN_TOL = 0.00045  # 0.000035
+    axiebump.MESH_COARSEN_TOL = 0.00085  # 0.000035
     axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
 
