@@ -5,7 +5,7 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 
-f = open('../data/loudness/loudness_small_simple_test9_2.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_test10_1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -98,7 +98,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_test9_2.p', 'rb') as fid:
+with open('../data/images/3Dpicture_test10_1.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -120,8 +120,8 @@ xo = pic_data['xo']
 yo = pic_data['yo']
 zo = pic_data['zo']
 # mesh lengths
-nx = 50
-ny = 20
+nx = 10
+ny = 5
 
 plt.figure()
 plt.plot(y0_list, A)
@@ -142,9 +142,9 @@ plt.show()
 U = np.sqrt(np.square(U1) + np.square(U2) + np.square(U3))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-X = np.reshape(x, (20,50))
-Y = np.reshape(y, (20,50))
-Z = np.reshape(z, (20,50))
+X = np.reshape(x, (5,10))
+Y = np.reshape(y, (5,10))
+Z = np.reshape(z, (5,10))
 #ax.plot_surface(X, Y, Z)
 # xx, yy, zz = np.meshgrid(x,y,z)
 # use xyz points from outputs file (before processing) for points
@@ -155,12 +155,12 @@ print('hi')
 grid = np.array(grid_u)
 grid = grid/grid.max()
 # print(grid)
-G = np.reshape(grid, (20,50))
+G = np.reshape(grid, (5,10))
 surf = ax.plot_surface(X, Y, Z, facecolors=cm.jet(G))
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 m = cm.ScalarMappable(cmap=cm.jet)
-m.set_array(np.reshape(np.array(grid_u), (20,50)))
+m.set_array(np.reshape(np.array(grid_u), (5,10)))
 fig.colorbar(m)
 plt.show()

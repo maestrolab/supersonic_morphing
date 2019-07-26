@@ -18,7 +18,7 @@ import platform
 
 def area(pts):
     'Area of cross-section.'
-
+    # FIXME: check pts stuff
     if list(pts[0]) != list(pts[-1]):
         pts = pts + pts[:1]
     # x = pts[:, 0]
@@ -28,6 +28,7 @@ def area(pts):
     s = 0
     for i in range(len(pts) - 1):
         s -= np.cross(pts[i, :], pts[i+1, :])
+    #print(np.linalg.norm(s)/2)
     return np.linalg.norm(s)/2
 
 
@@ -37,6 +38,7 @@ def calculating_area(X, Y, Z, y0_list, nx):
 
     geometry = LinearNDInterpolator(
         np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), rescale=True)
+    #print(geometry)
     # def geometry(xi):
     #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi, method='cubic')
     # change x to theta for even spacing
@@ -46,14 +48,20 @@ def calculating_area(X, Y, Z, y0_list, nx):
     z_solution = np.zeros(x_solution.shape)
     output = []
     A = []
+    #print(y0_list)
     for j in range(len(y0_list)):
         y0 = y0_list[j]
         for i in range(len(x_solution)):
+            # FIXME: check values of y-solution
             y_solution[i] = fsolve(diff, args=(mach, y0, x_solution[i]), x0=y0)
+            #print(y_solution[i])
             z_solution[i] = geometry([y_solution[i], x_solution[i]])
+        #print(y_solution[0])
+        #print(z_solution[0])
         points = np.array([x_solution, y_solution, z_solution]).T
         output.append(points)
         points = points[points[:, 0].argsort()]
+        #print(points)
         A.append(area(points))
 
     return np.array(A), np.array(output)
@@ -93,7 +101,7 @@ def calculate_loudness(bump_function):
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmosphere
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom')
-    axiebump.MESH_COARSEN_TOL = 0.00085  # 0.000035
+    axiebump.MESH_COARSEN_TOL = 0.00045  # 0.000035
     axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
 
@@ -102,8 +110,8 @@ def calculate_loudness(bump_function):
 
 all_output = []
 mach = 1.6
-nx = 50
-ny = 20
+nx = 10
+ny = 5
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
 f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
@@ -128,7 +136,7 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2, Y[1:] + 
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
-A0 = A0[0]
+#A0 = A0[0]
 steps = ['Step-2']#, 'Step-3']
 loudness = {}
 plt.figure()
@@ -151,7 +159,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test9_2.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_test10_2.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -205,5 +213,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_test9_2.p', 'wb') as fid:
+with open('../data/images/3Dpicture_test10_2.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
