@@ -4,8 +4,10 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import griddata
 import numpy as np
 import pickle
+from scipy.signal import savgol_filter
 
-f = open('../data/loudness/loudness_small_simple_test9_2.p', 'rb')
+
+f = open('../data/loudness/loudness_small_simple_mid_alt1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -13,19 +15,25 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
+<<<<<<< HEAD
 # "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data
 # folder
 f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
+=======
+# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
+>>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 data = pickle.load(f, encoding='latin1')
 f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_mid_alt1.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
 displacements = {}
 temperatures = {}
-steps = ['Step-2', 'Step-3']
+steps = ['Step-2']#, 'Step-3']
 U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
 for step in steps:
     displacements[step] = []
@@ -67,8 +75,10 @@ plt.show()
 plt.figure()
 plt.plot(temperatures['Step-2'],
          displacements['Step-2'], 'b', label='Cooling')
+'''
 plt.plot(temperatures['Step-3'],
          displacements['Step-3'], 'r', label='Heating')
+'''
 plt.legend()
 plt.show()
 
@@ -82,6 +92,14 @@ plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
 plt.legend()
 '''
 # plt.show()
+
+# Smoothing attempts
+plt.figure()
+yhat = savgol_filter(loudness['Step-2'], 11, 3)
+plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
+         yhat, 'b', label='Cooling')
+plt.title('Filtered Data')
+plt.show()
 
 '''
 fig, ax1 = plt.subplots()
@@ -100,7 +118,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_test9_2.p', 'rb') as fid:
+with open('../data/images/3Dpicture_mid_alt1.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -144,10 +162,17 @@ plt.show()
 U = np.sqrt(np.square(U1) + np.square(U2) + np.square(U3))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
+<<<<<<< HEAD
 X = np.reshape(x, (20, 50))
 Y = np.reshape(y, (20, 50))
 Z = np.reshape(z, (20, 50))
 # ax.plot_surface(X, Y, Z)
+=======
+X = np.reshape(x, (ny,nx))
+Y = np.reshape(y, (ny,nx))
+Z = np.reshape(z, (ny,nx))
+#ax.plot_surface(X, Y, Z)
+>>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 # xx, yy, zz = np.meshgrid(x,y,z)
 # use xyz points from outputs file (before processing) for points
 # print(xo.shape, yo.shape, zo.shape, U.shape)
@@ -158,12 +183,20 @@ print('hi')
 grid = np.array(grid_u)
 grid = grid/grid.max()
 # print(grid)
+<<<<<<< HEAD
 G = np.reshape(grid, (20, 50))
+=======
+G = np.reshape(grid, (ny,nx))
+>>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 surf = ax.plot_surface(X, Y, Z, facecolors=cm.jet(G))
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 m = cm.ScalarMappable(cmap=cm.jet)
+<<<<<<< HEAD
 m.set_array(np.reshape(np.array(grid_u), (20, 50)))
+=======
+m.set_array(np.reshape(np.array(grid_u), (ny,nx)))
+>>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 fig.colorbar(m)
 plt.show()
