@@ -13,8 +13,9 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
-# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
-# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+# "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data
+# folder
 f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
@@ -31,12 +32,13 @@ for step in steps:
     temperatures[step] = []
 
     for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
+        displacements[step].append(np.linalg.norm(
+                                   mid_data['U'][step][i]))  # - U0)
         temperatures[step].append(mid_data['NT11'][step][i])
 
 
-label2='Cooling'
-label3='Heating'
+label2 = 'Cooling'
+label3 = 'Heating'
 '''
 plt.figure()
 plt.plot(data['Time']['Step-2'],
@@ -79,7 +81,7 @@ plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], 'r', label='Heating')
 plt.legend()
 '''
-#plt.show()
+# plt.show()
 
 '''
 fig, ax1 = plt.subplots()
@@ -127,40 +129,41 @@ plt.figure()
 plt.plot(y0_list, A)
 plt.ylabel('Area along Mach Cone')
 plt.xlabel('Distance along aircraft')
-#plt.show()
+# plt.show()
 
 fig = plt.figure()
 ax = Axes3D(fig)
-#ax.scatter(X, Y, Z, c='b')
+# ax.scatter(X, Y, Z, c='b')
 x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.show()
 
-#print(len(U1))
+# print(len(U1))
 U = np.sqrt(np.square(U1) + np.square(U2) + np.square(U3))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-X = np.reshape(x, (20,50))
-Y = np.reshape(y, (20,50))
-Z = np.reshape(z, (20,50))
-#ax.plot_surface(X, Y, Z)
+X = np.reshape(x, (20, 50))
+Y = np.reshape(y, (20, 50))
+Z = np.reshape(z, (20, 50))
+# ax.plot_surface(X, Y, Z)
 # xx, yy, zz = np.meshgrid(x,y,z)
 # use xyz points from outputs file (before processing) for points
-#print(xo.shape, yo.shape, zo.shape, U.shape)
-grid_u = griddata(np.array([xo,yo,zo]).T, U, np.array([x,y,z]).T, fill_value=0, rescale=True, method='nearest')
+# print(xo.shape, yo.shape, zo.shape, U.shape)
+grid_u = griddata(np.array([xo, yo, zo]).T, U, np.array([x, y, z]).T,
+                  fill_value=0, rescale=True, method='nearest')
 print('hi')
-#print(grid_u)
+# print(grid_u)
 grid = np.array(grid_u)
 grid = grid/grid.max()
 # print(grid)
-G = np.reshape(grid, (20,50))
+G = np.reshape(grid, (20, 50))
 surf = ax.plot_surface(X, Y, Z, facecolors=cm.jet(G))
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 m = cm.ScalarMappable(cmap=cm.jet)
-m.set_array(np.reshape(np.array(grid_u), (20,50)))
+m.set_array(np.reshape(np.array(grid_u), (20, 50)))
 fig.colorbar(m)
 plt.show()

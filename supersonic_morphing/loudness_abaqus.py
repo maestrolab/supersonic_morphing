@@ -2,14 +2,15 @@ import numpy as np
 import pickle
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve, minimize, differential_evolution
-from scipy.interpolate import interp2d, CloughTocher2DInterpolator, LinearNDInterpolator, NearestNDInterpolator
-from scipy.spatial import Delaunay
+from scipy.optimize import fsolve  # , minimize, differential_evolution
+# from scipy.interpolate import interp2d, CloughTocher2DInterpolator
+from scipy.interpolate import LinearNDInterpolator  # , NearestNDInterpolator
+# from scipy.spatial import Delaunay
 
 from rapidboom import AxieBump
-from weather.boom import read_input
-from weather.scraper.twister import process_data
-import platform
+# from weather.boom import read_input
+# from weather.scraper.twister import process_data
+# import platform
 
 '''Works for:
  - any cross section calculation for any angle
@@ -38,7 +39,9 @@ def calculating_area(X, Y, Z, y0_list, nx):
     geometry = LinearNDInterpolator(
         np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), rescale=True)
     # def geometry(xi):
-    #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi, method='cubic')
+    #     return griddata(np.array([Y.ravel(), X.ravel()]).T, Z.ravel(), xi,
+    #                              method='cubic')
+
     # change x to theta for even spacing
     theta = np.linspace(0, np.pi/2, nx)
     x_solution = np.sin(theta) * 0.6
@@ -90,7 +93,7 @@ def calculate_loudness(bump_function):
     SBOOM_EXE = 'sboom_windows.dat.allow'
 
     # Run
-    # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmosphere
+    # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmo
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom')
     axiebump.MESH_COARSEN_TOL = 0.00085  # 0.000035
@@ -104,14 +107,15 @@ all_output = []
 mach = 1.6
 nx = 50
 ny = 20
-# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
-# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+# "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data
+# folder
 f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
 U3, U1, U2 = data['U']['Step-2'][0].T
-#U3, U1, U2 = 0, 0, 0
+# U3, U1, U2 = 0, 0, 0
 Z = -Z
 U3 = -U3
 
@@ -124,25 +128,27 @@ z_min, z_max = min(Z), max(Z)
 # calculate original area
 dY = (max(Y) - min(Y))
 X0 = np.concatenate((X[:-1], X[:-1], X + U1, X[1:]))
-Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2, Y[1:] + dY + .5))
+Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
+                     Y[1:] + dY + .5))
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
 A0 = A0[0]
-steps = ['Step-2']#, 'Step-3']
+steps = ['Step-2']  # , 'Step-3']
 loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
     for i in range(len(data['COORD'][step])):
-    #i = 18
+        # i = 18
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
         U3 = - U3
         # Calculate morphed area
         X = np.concatenate((X[:-1], X[:-1], X+U1, X[1:]))
-        Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + U2 + .5, Y[1:] + dY + .5))
+        Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5,
+                            Y + U2 + .5, Y[1:] + dY + .5))
         Z = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 
         loudness_i = calculate_loudness(lambda xx: calculate_radius(xx-12.5,
@@ -180,7 +186,7 @@ plt.show()
 
 fig = plt.figure()
 ax = Axes3D(fig)
-#ax.scatter(X, Y, Z, c='b')
+# ax.scatter(X, Y, Z, c='b')
 x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
