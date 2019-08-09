@@ -56,8 +56,8 @@ def calculating_area(X, Y, Z, y0_list, nx):
             y_solution[i] = fsolve(diff, args=(mach, y0, x_solution[i]), x0=y0)
             #print(y_solution[i])
             z_solution[i] = geometry([y_solution[i], x_solution[i]])
-        #print(y_solution[0])
-        #print(z_solution[0])
+        #print(y_solution[-1])
+        #print(z_solution[-1])
         points = np.array([x_solution, y_solution, z_solution]).T
         output.append(points)
         points = points[points[:, 0].argsort()]
@@ -69,6 +69,7 @@ def calculating_area(X, Y, Z, y0_list, nx):
 
 def calculate_radius(y, X, Y, Z, nx, A0):
     A, output = calculating_area(X, Y, Z, y, nx)
+    #print(A)
     all_output.append(output)
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
@@ -102,7 +103,7 @@ def calculate_loudness(bump_function):
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom')
     axiebump.MESH_COARSEN_TOL = 0.00045  # 0.000035
-    axiebump.N_TANGENTIAL = 20
+    axiebump.N_TANGENTIAL = 20  #FIXME?
     loudness = axiebump.run([bump_function, location, width])
 
     return loudness
@@ -110,11 +111,11 @@ def calculate_loudness(bump_function):
 
 all_output = []
 mach = 1.6
-nx = 10
-ny = 5
+nx = 50
+ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -142,7 +143,7 @@ loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-    for i in range(len(data['COORD'][step])):
+    for i in range(len(data['COORD'][step])): #range(6,12): #
     #i = 18
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
@@ -159,7 +160,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_test10_2.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_mid_alt1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -213,5 +214,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_test10_2.p', 'wb') as fid:
+with open('../data/images/3Dpicture_mid_alt1.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
