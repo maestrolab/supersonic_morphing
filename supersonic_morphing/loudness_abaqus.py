@@ -6,6 +6,7 @@ from scipy.optimize import fsolve  # , minimize, differential_evolution
 # from scipy.interpolate import interp2d, CloughTocher2DInterpolator
 from scipy.interpolate import LinearNDInterpolator  # , NearestNDInterpolator
 # from scipy.spatial import Delaunay
+from cycler import cycler
 
 from rapidboom import AxieBump
 # from weather.boom import read_input
@@ -116,16 +117,9 @@ all_output = []
 mach = 1.6
 nx = 50
 ny = 20
-<<<<<<< HEAD
-# "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
-# convert outputs pickle file to unix file endings using dos2unix.py in data
-# folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
-=======
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_Heat2.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -148,24 +142,16 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
-<<<<<<< HEAD
+
 A0 = A0[0]
-steps = ['Step-2']  # , 'Step-3']
-=======
-#A0 = A0[0]
-steps = ['Step-2']#, 'Step-3']
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
+steps = ['Step-3']#, 'Step-3']
 loudness = {}
 plt.figure()
+#plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
 for step in steps:
     loudness[step] = []
-<<<<<<< HEAD
-    for i in range(len(data['COORD'][step])):
-        # i = 18
-=======
     for i in range(len(data['COORD'][step])): #range(6,12): #
     #i = 18
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
@@ -182,7 +168,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_mid_alt1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_noTE_Heat2.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -190,12 +176,13 @@ pickle.dump(all_output, f)
 f.close()
 plt.show()
 plt.figure()
+'''
 plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], label='Heating')
 '''
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
-'''
+#'''
 plt.legend()
 plt.show()
 
@@ -236,5 +223,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_mid_alt1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_noTE_Heat2.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
