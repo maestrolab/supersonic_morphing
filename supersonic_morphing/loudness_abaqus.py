@@ -20,7 +20,6 @@ from rapidboom import AxieBump
 
 def area(pts):
     'Area of cross-section.'
-    # FIXME: check pts stuff
     if list(pts[0]) != list(pts[-1]):
         pts = pts + pts[:1]
     # x = pts[:, 0]
@@ -56,7 +55,6 @@ def calculating_area(X, Y, Z, y0_list, nx):
     for j in range(len(y0_list)):
         y0 = y0_list[j]
         for i in range(len(x_solution)):
-            # FIXME: check values of y-solution
             y_solution[i] = fsolve(diff, args=(mach, y0, x_solution[i]), x0=y0)
             #print(y_solution[i])
             z_solution[i] = geometry([y_solution[i], x_solution[i]])
@@ -146,6 +144,7 @@ A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
 
 A0 = A0[0]
+# I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
 steps = ['Step-3']#, 'Step-3']
 loudness = {}
 plt.figure(figsize=(12,6))
@@ -170,13 +169,19 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
+
+# MOST IMPORTANT DATA STORAGE FILE
 f = open('../data/loudness/loudness_small_simple_noTE_LoS1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
 pickle.dump(all_output, f)
 f.close()
+
+# showing area plots from calculate_radius function
 plt.show()
+
+# plotting loudness vs time
 plt.figure()
 '''
 plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
@@ -188,7 +193,7 @@ plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
 plt.legend()
 plt.show()
 
-
+# Area vs location plot of last increment
 y0_list = np.linspace(-1.5, 2, ny)
 A, output = calculating_area(X, Y, Z, y0_list, nx)
 A = A - A0
@@ -198,6 +203,7 @@ plt.ylabel('Area along Mach Cone')
 plt.xlabel('Distance along aircraft')
 plt.show()
 
+# Surface Plots
 fig = plt.figure()
 ax = Axes3D(fig)
 # ax.scatter(X, Y, Z, c='b')
