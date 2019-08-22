@@ -78,7 +78,9 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
     print('A', A-A0)
-    plt.plot(y, A)
+    plt.plot(y, A, label=str(r))
+    #plt.pause(0.05)
+    #plt.legend()
     # print('r', r)
     return sign*r
 
@@ -119,7 +121,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_Heat2.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_LoS1.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -146,7 +148,7 @@ print(A0)
 A0 = A0[0]
 steps = ['Step-3']#, 'Step-3']
 loudness = {}
-plt.figure()
+plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
 for step in steps:
     loudness[step] = []
@@ -168,7 +170,7 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_noTE_Heat2.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_noTE_LoS1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -223,5 +225,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_noTE_Heat2.p', 'wb') as fid:
+with open('../data/images/3Dpicture_noTE_LoS1.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
