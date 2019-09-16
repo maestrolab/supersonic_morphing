@@ -7,7 +7,8 @@ import pickle
 from scipy.signal import savgol_filter
 
 
-f = open('../data/loudness/loudness_small_simple_mid_alt1.p', 'rb')
+# Loudness data from loudness_abaqus.py
+f = open('../data/loudness/loudness_small_simple_noTE.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -15,19 +16,29 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
+<<<<<<< HEAD
 # "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data
 # folder
 f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
+=======
+# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+
+# Displacement data for the whole surface
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE.p', 'rb')  #
+>>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
 data = pickle.load(f, encoding='latin1')
 f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_mid_alt1.p', 'rb')  #
+# Displacement data from the midpoint
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
 displacements = {}
 temperatures = {}
-steps = ['Step-2']#, 'Step-3']
+# I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
+steps = ['Step-2', 'Step-3']
 U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
 for step in steps:
     displacements[step] = []
@@ -66,31 +77,32 @@ plt.plot(1.0 + np.array(data['Time']['Step-3']),
 plt.legend()
 plt.show()
 '''
+
+# displacement plot
 plt.figure()
 plt.plot(temperatures['Step-2'],
          displacements['Step-2'], 'b', label='Cooling')
-'''
 plt.plot(temperatures['Step-3'],
          displacements['Step-3'], 'r', label='Heating')
-'''
+
 plt.legend()
 plt.show()
 
-
+# loudness plot
 plt.figure()
 plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], 'b', label='Cooling')
-'''
+
 plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], 'r', label='Heating')
 plt.legend()
-'''
+
 # plt.show()
 
-# Smoothing attempts
+# Smoothed loudness plot
 plt.figure()
-yhat = savgol_filter(loudness['Step-2'], 11, 3)
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
+yhat = savgol_filter(loudness['Step-3'], 11, 3)
+plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          yhat, 'b', label='Cooling')
 plt.title('Filtered Data')
 plt.show()
@@ -112,7 +124,7 @@ ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_mid_alt1.p', 'rb') as fid:
+with open('../data/images/3Dpicture_noTE.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -137,12 +149,14 @@ zo = pic_data['zo']
 nx = 50
 ny = 20
 
+# Area of last increment plot
 plt.figure()
 plt.plot(y0_list, A)
 plt.ylabel('Area along Mach Cone')
 plt.xlabel('Distance along aircraft')
 # plt.show()
 
+# surface plot of last increment
 fig = plt.figure()
 ax = Axes3D(fig)
 # ax.scatter(X, Y, Z, c='b')
@@ -152,6 +166,7 @@ plt.xlabel('X')
 plt.ylabel('Y')
 plt.show()
 
+# Contour surface of last increment
 # print(len(U1))
 U = np.sqrt(np.square(U1) + np.square(U2) + np.square(U3))
 fig = plt.figure()

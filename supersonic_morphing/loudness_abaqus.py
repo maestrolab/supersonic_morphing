@@ -6,6 +6,7 @@ from scipy.optimize import fsolve  # , minimize, differential_evolution
 # from scipy.interpolate import interp2d, CloughTocher2DInterpolator
 from scipy.interpolate import LinearNDInterpolator  # , NearestNDInterpolator
 # from scipy.spatial import Delaunay
+from cycler import cycler
 
 from rapidboom import AxieBump
 # from weather.boom import read_input
@@ -19,7 +20,6 @@ from rapidboom import AxieBump
 
 def area(pts):
     'Area of cross-section.'
-    # FIXME: check pts stuff
     if list(pts[0]) != list(pts[-1]):
         pts = pts + pts[:1]
     # x = pts[:, 0]
@@ -55,7 +55,6 @@ def calculating_area(X, Y, Z, y0_list, nx):
     for j in range(len(y0_list)):
         y0 = y0_list[j]
         for i in range(len(x_solution)):
-            # FIXME: check values of y-solution
             y_solution[i] = fsolve(diff, args=(mach, y0, x_solution[i]), x0=y0)
             #print(y_solution[i])
             z_solution[i] = geometry([y_solution[i], x_solution[i]])
@@ -77,7 +76,9 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
     print('A', A-A0)
-    plt.plot(y, A)
+    plt.plot(y, A, label=str(r))
+    #plt.pause(0.05)
+    #plt.legend()
     # print('r', r)
     return sign*r
 
@@ -118,7 +119,11 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
+<<<<<<< HEAD
 f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
+=======
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_LoS1.p', 'rb')  #
+>>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -141,10 +146,18 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
+<<<<<<< HEAD
 #A0 = A0[0]
 steps = ['Step-2']#, 'Step-3']
+=======
+
+A0 = A0[0]
+# I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
+steps = ['Step-3']#, 'Step-3']
+>>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
 loudness = {}
-plt.figure()
+plt.figure(figsize=(12,6))
+#plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
 for step in steps:
     loudness[step] = []
     for i in range(len(data['COORD'][step])): #range(6,12): #
@@ -165,24 +178,31 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-f = open('../data/loudness/loudness_small_simple_mid_alt1.p', 'wb')
+
+# MOST IMPORTANT DATA STORAGE FILE
+f = open('../data/loudness/loudness_small_simple_noTE_LoS1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
 pickle.dump(all_output, f)
 f.close()
+
+# showing area plots from calculate_radius function
 plt.show()
+
+# plotting loudness vs time
 plt.figure()
+'''
 plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], label='Heating')
 '''
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
-'''
+#'''
 plt.legend()
 plt.show()
 
-
+# Area vs location plot of last increment
 y0_list = np.linspace(-1.5, 2, ny)
 A, output = calculating_area(X, Y, Z, y0_list, nx)
 A = A - A0
@@ -192,6 +212,7 @@ plt.ylabel('Area along Mach Cone')
 plt.xlabel('Distance along aircraft')
 plt.show()
 
+# Surface Plots
 fig = plt.figure()
 ax = Axes3D(fig)
 # ax.scatter(X, Y, Z, c='b')
@@ -219,5 +240,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_mid_alt1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_noTE_LoS1.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
