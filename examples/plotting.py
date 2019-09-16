@@ -15,16 +15,10 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
-<<<<<<< HEAD
 # "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data
 # folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
-=======
-# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
-# convert outputs pickle file to unix file endings using dos2unix.py in data folder
 f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 data = pickle.load(f, encoding='latin1')
 f.close()
 f = open('../data/abaqus_outputs/mid_outputs_small_simple_mid_alt1.p', 'rb')  #
@@ -162,17 +156,10 @@ plt.show()
 U = np.sqrt(np.square(U1) + np.square(U2) + np.square(U3))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-<<<<<<< HEAD
-X = np.reshape(x, (20, 50))
-Y = np.reshape(y, (20, 50))
-Z = np.reshape(z, (20, 50))
-# ax.plot_surface(X, Y, Z)
-=======
 X = np.reshape(x, (ny,nx))
 Y = np.reshape(y, (ny,nx))
 Z = np.reshape(z, (ny,nx))
 #ax.plot_surface(X, Y, Z)
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 # xx, yy, zz = np.meshgrid(x,y,z)
 # use xyz points from outputs file (before processing) for points
 # print(xo.shape, yo.shape, zo.shape, U.shape)
@@ -183,20 +170,12 @@ print('hi')
 grid = np.array(grid_u)
 grid = grid/grid.max()
 # print(grid)
-<<<<<<< HEAD
-G = np.reshape(grid, (20, 50))
-=======
 G = np.reshape(grid, (ny,nx))
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 surf = ax.plot_surface(X, Y, Z, facecolors=cm.jet(G))
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 m = cm.ScalarMappable(cmap=cm.jet)
-<<<<<<< HEAD
-m.set_array(np.reshape(np.array(grid_u), (20, 50)))
-=======
 m.set_array(np.reshape(np.array(grid_u), (ny,nx)))
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 fig.colorbar(m)
 plt.show()

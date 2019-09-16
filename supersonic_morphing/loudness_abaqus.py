@@ -116,16 +116,9 @@ all_output = []
 mach = 1.6
 nx = 50
 ny = 20
-<<<<<<< HEAD
-# "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
-# convert outputs pickle file to unix file endings using dos2unix.py in data
-# folder
-f = open('../data/abaqus_outputs/outputs_small_simple_test.p', 'rb')  #
-=======
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
 f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -148,24 +141,14 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
-<<<<<<< HEAD
-A0 = A0[0]
-steps = ['Step-2']  # , 'Step-3']
-=======
 #A0 = A0[0]
 steps = ['Step-2']#, 'Step-3']
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
 loudness = {}
 plt.figure()
 for step in steps:
     loudness[step] = []
-<<<<<<< HEAD
-    for i in range(len(data['COORD'][step])):
-        # i = 18
-=======
     for i in range(len(data['COORD'][step])): #range(6,12): #
     #i = 18
->>>>>>> 0887406c8805f69f057fc491bcd0eb9a78eb33c7
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
         Z = -Z
