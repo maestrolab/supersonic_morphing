@@ -76,7 +76,7 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
     print('A', A-A0)
-    plt.plot(y, A, label=str(r))
+    plt.plot(y, A)#, label=str(r))
     #plt.pause(0.05)
     #plt.legend()
     # print('r', r)
@@ -107,7 +107,7 @@ def calculate_loudness(bump_function):
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom')
     axiebump.MESH_COARSEN_TOL = 0.00045  # 0.000035
-    axiebump.N_TANGENTIAL = 20  #FIXME?
+    axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
 
     return loudness
@@ -145,7 +145,7 @@ print(A0)
 
 A0 = A0[0]
 # I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
-steps = ['Step-3']#, 'Step-3']
+steps = ['Step-2', 'Step-3']
 loudness = {}
 plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
@@ -171,7 +171,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple_noTE_LoS1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_noTE_fix1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -183,10 +183,8 @@ plt.show()
 
 # plotting loudness vs time
 plt.figure()
-'''
 plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], label='Heating')
-'''
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
 #'''
@@ -231,5 +229,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_noTE_LoS1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_noTE_fix1.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
