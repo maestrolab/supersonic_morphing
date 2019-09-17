@@ -119,7 +119,11 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
+<<<<<<< HEAD
+f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
+=======
 f = open('../data/abaqus_outputs/outputs_small_simple_noTE_LoS1.p', 'rb')  #
+>>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
 data = pickle.load(f, encoding='latin1')
 
 Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
@@ -142,10 +146,19 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
+<<<<<<< HEAD
+#A0 = A0[0]
+steps = ['Step-2']#, 'Step-3']
+=======
 
 A0 = A0[0]
 # I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
+<<<<<<< HEAD
 steps = ['Step-2', 'Step-3']
+=======
+steps = ['Step-3']#, 'Step-3']
+>>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
+>>>>>>> 6c5ade559c76572abf3801a6be56b183a947b687
 loudness = {}
 plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))

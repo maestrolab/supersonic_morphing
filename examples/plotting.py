@@ -16,11 +16,18 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
+<<<<<<< HEAD
+# "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data
+# folder
+f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
+=======
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
 
 # Displacement data for the whole surface
 f = open('../data/abaqus_outputs/outputs_small_simple_noTE.p', 'rb')  #
+>>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
 data = pickle.load(f, encoding='latin1')
 f.close()
 # Displacement data from the midpoint
