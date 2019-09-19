@@ -10,7 +10,7 @@ from cycler import cycler
 
 from rapidboom import AxieBump
 # from weather.boom import read_input
-# from weather.scraper.twister import process_data
+from weather.scraper.twister import process_data
 # import platform
 
 '''Works for:
@@ -89,7 +89,7 @@ def mach_cone(y, MACH, y0):
     return a*y + b
 
 
-def calculate_loudness(bump_function):
+def calculate_loudness(bump_function):  #height_to_ground, weather_data):
     # Bump design variables
     x1 = 0.6/np.tan(np.arcsin(1/1.6))
     location = 12.5 + x1
@@ -105,8 +105,9 @@ def calculate_loudness(bump_function):
     # Run
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmo
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
-                        deformation='custom')
-    axiebump.MESH_COARSEN_TOL = 0.00045  # 0.000035
+                        deformation='custom', weather='standard')#,
+                        #altitude=height_to_ground, weather=weather_data)
+    axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
     axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
 
@@ -119,15 +120,32 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-<<<<<<< HEAD
-f = open('../data/abaqus_outputs/outputs_small_simple_mid_alt1.p', 'rb')  #
-=======
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_LoS1.p', 'rb')  #
->>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_psuedo_50S.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
-Z, X, Y = np.unique(data['COORD']['Step-2'][0], axis=1).T
-U3, U1, U2 = data['U']['Step-2'][0].T
+# Weather inputs
+day = '18'
+month = '06'
+year = '2018'
+hour = '12'
+lat = 34
+lon = -118
+alt_ft = 45000
+
+# Extracting data from database
+alt_m = alt_ft * 0.3048
+w_data, altitudes = process_data(day, month, year, hour, alt_m,
+                               directory='../../weather/data/weather/twister/')
+key = '%i, %i' % (lat, lon)
+weather_data = w_data[key]
+
+# Height to ground (HAG)
+index = list(w_data.keys()).index(key)
+height_to_ground = altitudes[index] / 0.3048
+
+# abaqus data manipulation
+Z, X, Y = np.unique(data['COORD']['Step-1'][0], axis=1).T
+U3, U1, U2 = data['U']['Step-1'][0].T
 # U3, U1, U2 = 0, 0, 0
 Z = -Z
 U3 = -U3
@@ -146,22 +164,14 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
 print(A0)
-<<<<<<< HEAD
-#A0 = A0[0]
-steps = ['Step-2']#, 'Step-3']
-=======
 
 A0 = A0[0]
 # I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
-<<<<<<< HEAD
 steps = ['Step-2', 'Step-3']
-=======
-steps = ['Step-3']#, 'Step-3']
->>>>>>> a8cc06a3d791dfcfbd44e9e0f25b07b10fed9586
->>>>>>> 6c5ade559c76572abf3801a6be56b183a947b687
 loudness = {}
 plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
+# Function loop
 for step in steps:
     loudness[step] = []
     for i in range(len(data['COORD'][step])): #range(6,12): #
@@ -184,7 +194,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple_noTE_fix1.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_fix1_noTE_psuedo_50S.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -242,5 +252,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_noTE_fix1.p', 'wb') as fid:
+with open('../data/images/3Dpicture_fix1_noTE_psuedo_50S.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
