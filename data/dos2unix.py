@@ -3,16 +3,25 @@
 convert dos linefeeds (crlf) to unix (lf)
 usage: dos2unix.py
 """
-original = "./abaqus_outputs/mid_outputs_small_simple_test.p"
-destination = "./mid_outputs_small_simple_test_ux.p"
+import os
 
-content = ''
-outsize = 0
-with open(original, 'rb') as infile:
-    content = infile.read()
-with open(destination, 'wb') as output:
-    for line in content.splitlines():
-        outsize += len(line) + 1
-        output.write(line + str.encode('\n'))
+def reformat(filename):
+    content = ''
+    outsize = 0
+    with open(filename, 'rb') as infile:
+        content = infile.read()
+    os.remove(filename)
+    with open(filename, 'wb') as output:
+        for line in content.splitlines():
+            outsize += len(line) + 1
+            output.write(line + str.encode('\n'))
 
-print("Done. Saved %s by    tes." % (len(content)-outsize))
+for dir in os.listdir():
+    if dir[-3:] != '.py':
+        files = os.listdir(dir+'/')
+        for file in files:
+            if file[-2:] == '.p':
+                print(file)
+                reformat(dir+'/'+file)
+
+print("Done")

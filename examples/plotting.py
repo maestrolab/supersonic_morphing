@@ -8,9 +8,10 @@ from scipy.signal import savgol_filter
 
 
 # Loudness data from loudness_abaqus.py
-f = open('../data/loudness/loudness_small_simple_noTE.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_noTE_LoS1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
+
 
 # f = open('output.p', 'rb')
 # all_output = pickle.load(f)
@@ -20,27 +21,33 @@ f.close()
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
 
 # Displacement data for the whole surface
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE.p', 'rb')  #
+# Displacement data from the midpoint
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_LoS1.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
-# Displacement data from the midpoint
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
 
+plt.figure()
+plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
+         loudness['Step-2'], label='Heating')
+plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
+         loudness['Step-3'], label='Cooling')
+plt.xlabel('Time (s)')
+plt.legend()
+plt.show()
+
+print(data)
 displacements = {}
 temperatures = {}
-# I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
-steps = ['Step-2', 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
+steps = ['Step-1', 'Step-2', 'Step-3']
+U0 = np.linalg.norm(data['U'][steps[0]][0])
 for step in steps:
     displacements[step] = []
     temperatures[step] = []
 
-    for i in range(len(mid_data['U'][step])):
+    for i in range(len(data['U'][step])):
         displacements[step].append(np.linalg.norm(
-                                   mid_data['U'][step][i]))  # - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
+                                   data['U'][step][i]))  # - U0)
+        temperatures[step].append(data['NT11'][step][i])
 
 
 label2 = 'Cooling'
@@ -78,7 +85,7 @@ plt.plot(temperatures['Step-2'],
 plt.plot(temperatures['Step-3'],
          displacements['Step-3'], 'r', label='Heating')
 
-plt.legend()
+# plt.legend()
 plt.show()
 
 # loudness plot
@@ -88,7 +95,7 @@ plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
 
 plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], 'r', label='Heating')
-plt.legend()
+# plt.legend()
 
 # plt.show()
 
