@@ -10,7 +10,7 @@ from cycler import cycler
 
 from rapidboom import AxieBump
 # from weather.boom import read_input
-# from weather.scraper.twister import process_data
+from weather.scraper.twister import process_data
 # import platform
 
 '''Works for:
@@ -89,7 +89,7 @@ def mach_cone(y, MACH, y0):
     return a*y + b
 
 
-def calculate_loudness(bump_function):
+def calculate_loudness(bump_function):  #height_to_ground, weather_data):
     # Bump design variables
     x1 = 0.6/np.tan(np.arcsin(1/1.6))
     location = 12.5 + x1
@@ -105,9 +105,10 @@ def calculate_loudness(bump_function):
     # Run
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmo
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
-                        deformation='custom')
+                        deformation='custom', weather='standard')#,
+                        #altitude=height_to_ground, weather=weather_data)
     axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
-    axiebump.N_TANGENTIAL = 20  #FIXME?
+    axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
     return loudness
 
@@ -121,6 +122,28 @@ ny = 20
 f = open('../data/abaqus_outputs/outputs_small_simple.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
+
+# Weather inputs
+day = '18'
+month = '06'
+year = '2018'
+hour = '12'
+lat = 34
+lon = -118
+alt_ft = 45000
+
+# Extracting data from database
+alt_m = alt_ft * 0.3048
+w_data, altitudes = process_data(day, month, year, hour, alt_m,
+                               directory='../../weather/data/weather/twister/')
+key = '%i, %i' % (lat, lon)
+weather_data = w_data[key]
+
+# Height to ground (HAG)
+index = list(w_data.keys()).index(key)
+height_to_ground = altitudes[index] / 0.3048
+
+# abaqus data manipulation
 Z, X, Y = np.unique(data['COORD']['Step-1'][0], axis=1).T
 U3, U1, U2 = data['U']['Step-1'][0].T
 # U3, U1, U2 = 0, 0, 0
@@ -148,6 +171,7 @@ steps = ['Step-1', 'Step-2', 'Step-3']#, 'Step-3']
 loudness = {}
 plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
+# Function loop
 for step in steps:
     loudness[step] = []
     for i in range(len(data['COORD'][step])): #range(6,12): #

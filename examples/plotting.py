@@ -9,6 +9,7 @@ from scipy.signal import savgol_filter
 
 # Loudness data from loudness_abaqus.py
 f = open('../data/loudness/loudness_small_simple_noTE_LoS1.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_fix1_wideT1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -17,13 +18,18 @@ f.close()
 # all_output = pickle.load(f)
 # f.close()
 
-# if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
-# convert outputs pickle file to unix file endings using dos2unix.py in data folder
+
+# "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
+# convert outputs pickle file to unix file endings using dos2unix.py in data
+# folder
 
 # Displacement data for the whole surface
-# Displacement data from the midpoint
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_LoS1.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_wideT1.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
+f.close()
+# Displacement data from the midpoint
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_wideT1.p', 'rb')  #
+mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
 plt.figure()
@@ -97,8 +103,9 @@ plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], 'r', label='Heating')
 # plt.legend()
 
-# plt.show()
+plt.show()
 
+'''
 # Smoothed loudness plot
 plt.figure()
 yhat = savgol_filter(loudness['Step-3'], 11, 3)
@@ -106,7 +113,7 @@ plt.plot(temperatures['Step-3'][:len(loudness['Step-3'])],
          yhat, 'b', label='Cooling')
 plt.title('Filtered Data')
 plt.show()
-
+'''
 '''
 fig, ax1 = plt.subplots()
 ax2 = ax1.twinx()
@@ -123,8 +130,9 @@ ax1.set_ylabel('Displacements (m)', color='b')
 ax2.set_ylabel('Loudness (PLdB)', color='k')
 plt.show()
 '''
+'''
 # Reproducing Pictures from loudness to check calculations
-with open('../data/images/3Dpicture_noTE.p', 'rb') as fid:
+with open('../data/images/3Dpicture_fix1_bigHmax.p', 'rb') as fid:
     pic_data = pickle.load(fid)
 # points from Mach cone intersections
 x = pic_data['x']
@@ -193,4 +201,5 @@ ax.set_zlabel('Z')
 m = cm.ScalarMappable(cmap=cm.jet)
 m.set_array(np.reshape(np.array(grid_u), (ny,nx)))
 fig.colorbar(m)
+'''
 plt.show()
