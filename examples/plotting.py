@@ -12,7 +12,6 @@ f = open('../data/loudness/loudness_small_simple_noTE_Heat2_fix1.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
-
 # f = open('output.p', 'rb')
 # all_output = pickle.load(f)
 # f.close()
@@ -31,28 +30,19 @@ f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE_Heat2.p', 'rb')  
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
-plt.figure()
-plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], label='Heating')
-plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
-         loudness['Step-3'], label='Cooling')
-plt.xlabel('Time (s)')
-plt.legend()
-plt.show()
-
-print(data)
 displacements = {}
 temperatures = {}
-steps = ['Step-1', 'Step-2', 'Step-3']
-U0 = np.linalg.norm(data['U'][steps[0]][0])
+# I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
+steps = ['Step-2', 'Step-3']
+U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
 for step in steps:
     displacements[step] = []
     temperatures[step] = []
 
-    for i in range(len(data['U'][step])):
+    for i in range(len(mid_data['U'][step])):
         displacements[step].append(np.linalg.norm(
-                                   data['U'][step][i]))  # - U0)
-        temperatures[step].append(data['NT11'][step][i])
+                                   mid_data['U'][step][i]))  # - U0)
+        temperatures[step].append(mid_data['NT11'][step][i])
 
 
 label2 = 'Cooling'

@@ -75,8 +75,8 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     all_output.append(output)
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
-    # print('A', A-A0)
-    #plt.plot(y, A, label=str(r))
+    print('A', A-A0)
+    plt.plot(y, A)#, label=str(r))
     #plt.pause(0.05)
     #plt.legend()
     # print('r', r)
@@ -110,6 +110,7 @@ def calculate_loudness(bump_function):  #height_to_ground, weather_data):
     axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
     axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
+
     return loudness
 
 
@@ -119,9 +120,8 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_psuedo_50S.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
-
 
 # Weather inputs
 day = '18'
@@ -163,11 +163,11 @@ Y0 = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5, Y + .5 + U2,
                      Y[1:] + dY + .5))
 Z0 = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
 A0, output0 = calculating_area(X0, Y0, Z0, [min(Y)], nx)
-# print(A0)
+print(A0)
 
 A0 = A0[0]
 # I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
-steps = ['Step-1', 'Step-2', 'Step-3']#, 'Step-3']
+steps = ['Step-2', 'Step-3']
 loudness = {}
 plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
@@ -192,10 +192,9 @@ for step in steps:
                                                                     A0=A0))
         loudness[step].append(loudness_i)
         print(step, i, loudness_i)
-plt.show()
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_fix1_noTE_psuedo_50S.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -211,7 +210,7 @@ plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
          loudness['Step-2'], label='Heating')
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
-plt.xlabel('Time (s)')
+#'''
 plt.legend()
 plt.show()
 
@@ -253,5 +252,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture.p', 'wb') as fid:
+with open('../data/images/3Dpicture_fix1_noTE_psuedo_50S.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
