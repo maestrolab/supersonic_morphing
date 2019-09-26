@@ -5,155 +5,75 @@ from scipy.interpolate import griddata
 import numpy as np
 import pickle
 from scipy.signal import savgol_filter
+from cycler import cycler
 
 
-f = open('../data/loudness/loudness_small_simple_alt6.p', 'rb')
-loudness = pickle.load(f)
-f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_alt6.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
+mid_output_name = 'mid_outputs_small_simple_noTE_50S'
+loudness_filenames = ['loudness_small_simple_fix1_noTE_50S_weather1',
+                      'loudness_small_simple_fix1_noTE_50S_weather2',
+                      'loudness_small_simple_fix1_noTE_50S_weather3',
+                      'loudness_small_simple_fix1_noTE_50S_weather4']
 
-displacements = {}
-temperatures = {}
-steps = ['Step-2']#, 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
-for step in steps:
-    displacements[step] = []
-    temperatures[step] = []
+legend_labels = ['34 lat, -118 lon',
+                 '36 lat, -105 lon',
+                 '38 lat, -93 lon',
+                 '40 lat, -80 lon']
 
-    for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
+color = ['r','b']
+colors = ['m', 'g', 'c', 'y']
+marker = ['', '--', '.-', '-.']
 
-# initializing plot and plotting first dataset (alt1)
 plt.figure()
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], 'b', label='Max Disp = 0.2700 cm')
+for j in range(len(loudness_filenames)):
 
-# Getting and plotting data from fifth alternate
-f = open('../data/loudness/loudness_small_simple_alt1.p', 'rb')
-loudness = pickle.load(f)
-f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_alt1.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
-displacements = {}
-temperatures = {}
-steps = ['Step-2']#, 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
-for step in steps:
-    displacements[step] = []
-    temperatures[step] = []
+    f = open('../data/loudness/' + loudness_filenames[j] + '.p', 'rb')
+    loudness = pickle.load(f)
+    f.close()
+    f = open('../data/abaqus_outputs/' + mid_output_name + '.p', 'rb')
+    mid_data = pickle.load(f, encoding='latin1')
+    f.close()
 
-    for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
+    displacements = {}
+    temperatures = {}
+    steps = ['Step-2', 'Step-3']
+    U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
+    k = 0
+    for step in steps:
+        displacements[step] = []
+        temperatures[step] = []
 
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], label='Max Disp = 0.2690 cm')
+        for i in range(len(mid_data['U'][step])):
+            displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
+            temperatures[step].append(mid_data['NT11'][step][i])
 
-# Getting and plotting data from second alternate
-f = open('../data/loudness/loudness_small_simple_alt2.p', 'rb')
-loudness = pickle.load(f)
-f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_alt2.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
-displacements = {}
-temperatures = {}
-steps = ['Step-2']#, 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
-for step in steps:
-    displacements[step] = []
-    temperatures[step] = []
+        plt.plot(temperatures[step][:len(loudness[step])],
+                 loudness[step], colors[j])
+        k += 1
+    plt.plot([], [], colors[j], label=legend_labels[j])
 
-    for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
-
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], label='Max Disp = 0.2635 cm')
-
-# Getting and plotting data from third alternate
-f = open('../data/loudness/loudness_small_simple_alt3.p', 'rb')
-loudness = pickle.load(f)
-f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_alt3.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
-displacements = {}
-temperatures = {}
-steps = ['Step-2']#, 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
-for step in steps:
-    displacements[step] = []
-    temperatures[step] = []
-
-    for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
-
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], label='Max Disp = 0.2614 cm')
-
-# Getting and plotting data from fourth alternate
-f = open('../data/loudness/loudness_small_simple_alt4.p', 'rb')
-loudness = pickle.load(f)
-f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_alt4.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
-displacements = {}
-temperatures = {}
-steps = ['Step-2']#, 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
-for step in steps:
-    displacements[step] = []
-    temperatures[step] = []
-
-    for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
-
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], label='Max Disp = 0.2574 cm')
-
-# Getting and plotting data from fifth alternate
-f = open('../data/loudness/loudness_small_simple_alt5.p', 'rb')
-loudness = pickle.load(f)
-f.close()
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_alt5.p', 'rb')  #
-mid_data = pickle.load(f, encoding='latin1')
-f.close()
-displacements = {}
-temperatures = {}
-steps = ['Step-2']#, 'Step-3']
-U0 = np.linalg.norm(mid_data['U'][steps[0]][0])
-for step in steps:
-    displacements[step] = []
-    temperatures[step] = []
-
-    for i in range(len(mid_data['U'][step])):
-        displacements[step].append(np.linalg.norm(mid_data['U'][step][i]))# - U0)
-        temperatures[step].append(mid_data['NT11'][step][i])
-
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         loudness['Step-2'], label='Max Disp = 0.2524 cm')
-
-
+plt.legend()
 plt.xlabel('Temperature (K)')
 plt.ylabel('Loudness (PLdB)')
-plt.title('Comparison of Loudness Spikes for Similar Abaqus Models')
-plt.legend()
 plt.show()
 
+# Basemap to plot locations
+from mpl_toolkits.basemap import Basemap
+
+fig = plt.figure(figsize=(12, 6))
+
+lon = [-118, -105, -93, -80]
+lat = [34, 36, 38, 40]
+
+m = Basemap(projection='merc', llcrnrlat=13, urcrnrlat=58,
+            llcrnrlon=-144, urcrnrlon=-53, resolution='c')
+map_lon, map_lat = m(*(lon, lat))
+
+m.drawstates()
+m.drawcountries(linewidth=1.0)
+m.drawcoastlines()
+m.scatter(map_lon, map_lat, marker='D', color='m')
 '''
-# Smoothing attempts
-plt.figure()
-yhat = savgol_filter(loudness['Step-2'], 11, 3)
-plt.plot(temperatures['Step-2'][:len(loudness['Step-2'])],
-         yhat, 'b', label='Cooling')
-plt.title('Filtered Data')
+for i, txt in enumerate(legend_labels):
+    plt.annotate(txt, (map_lon[i], map_lat[i]), color='m')
+'''
 plt.show()
-'''
