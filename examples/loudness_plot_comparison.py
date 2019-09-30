@@ -10,7 +10,7 @@ from cycler import cycler
 
 mid_output_name = 'mid_outputs_small_simple_noTE_50S'
 loudness_filenames = ['loudness_small_simple_fix1_noTE_50S_weather1',
-                      #'loudness_small_simple_fix1_noTE_50S_weather2',
+                      'loudness_small_simple_fix1_noTE_50S_weather2',
                       'loudness_small_simple_fix1_noTE_50S_weather3',
                       'loudness_small_simple_fix1_noTE_50S_weather4']
 
@@ -72,4 +72,8 @@ m.drawstates()
 m.drawcountries(linewidth=1.0)
 m.drawcoastlines()
 m.scatter(map_lon, map_lat, marker='D', color='m')
+'''
+for i, txt in enumerate(legend_labels):
+    plt.annotate(txt, (map_lon[i], map_lat[i]), color='m')
+'''
 plt.show()
