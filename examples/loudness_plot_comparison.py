@@ -51,7 +51,7 @@ for j in range(len(loudness_filenames)):
         k += 1
     plt.plot([], [], colors[j], label=legend_labels[j])
 
-plt.legend()
+plt.legend(loc='upper left')
 plt.xlabel('Temperature (K)')
 plt.ylabel('Loudness (PLdB)')
 plt.show()

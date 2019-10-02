@@ -8,7 +8,7 @@ from scipy.signal import savgol_filter
 
 
 # Loudness data from loudness_abaqus.py
-f = open('../data/loudness/loudness_small_simple_noTE_Heat2_fix1.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_fix1_noTE_50S_weather3.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -22,11 +22,11 @@ f.close()
 # folder
 
 # Displacement data for the whole surface
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_Heat2.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50S.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
 # Displacement data from the midpoint
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE_Heat2.p', 'rb')  #
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE_50S.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
@@ -79,7 +79,7 @@ plt.plot(temperatures['Step-2'],
          displacements['Step-2'], 'b', label='Cooling')
 plt.plot(temperatures['Step-3'],
          displacements['Step-3'], 'r', label='Heating')
-plt.title('Displacements')
+plt.title('Displacement')
 plt.legend()
 #plt.show()
 
