@@ -105,8 +105,7 @@ def calculate_loudness(bump_function):  #height_to_ground, weather_data):
     # Run
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmo
     axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
-                        deformation='custom', weather='standard')#,
-                        #altitude=height_to_ground, weather=weather_data)
+                        deformation='custom', weather='standard')
     axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
     axiebump.N_TANGENTIAL = 20
     loudness = axiebump.run([bump_function, location, width])
@@ -120,7 +119,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_psuedo_50S.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50S.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 # Weather inputs
@@ -194,7 +193,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple_fix1_noTE_psuedo_50S.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_fix1_noTE_50S_check1.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -252,5 +251,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_fix1_noTE_psuedo_50S.p', 'wb') as fid:
+with open('../data/images/3Dpicture_fix1_noTE_50S_check1.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
