@@ -122,9 +122,9 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_psuedo_50S.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50S.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
-
+''' Temporary comment so I don't have to dos2unix the weather stuff too
 # Weather inputs
 day = '18'
 month = '06'
@@ -144,7 +144,7 @@ weather_data = w_data[key]
 # Height to ground (HAG)
 index = list(w_data.keys()).index(key)
 height_to_ground = altitudes[index] / 0.3048
-
+'''
 # abaqus data manipulation
 Z, X, Y = np.unique(data['COORD']['Step-1'][0], axis=1).T
 U3, U1, U2 = data['U']['Step-1'][0].T
@@ -196,7 +196,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple_fix1_noTE_psuedo_50S.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_fix1_noTE_50S_EqvAtest.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -254,5 +254,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_fix1_noTE_psuedo_50S.p', 'wb') as fid:
+with open('../data/images/3Dpicture_fix1_noTE_50S_EqvAtest.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
