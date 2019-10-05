@@ -9,6 +9,7 @@ from scipy.interpolate import LinearNDInterpolator  # , NearestNDInterpolator
 from cycler import cycler
 
 from rapidboom import AxieBump
+from rapidboom import EquivArea
 # from weather.boom import read_input
 from weather.scraper.twister import process_data
 # import platform
@@ -104,11 +105,13 @@ def calculate_loudness(bump_function):  #height_to_ground, weather_data):
 
     # Run
     # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmo
-    axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
-                        deformation='custom', weather='standard')
-    axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
-    axiebump.N_TANGENTIAL = 20
-    loudness = axiebump.run([bump_function, location, width])
+    # untested EquivArea class
+    equivarea = EquivArea(CASE_DIR, SBOOM_EXE, altitude=alt_ft,
+                        deformation='custom', weather='standard')#,
+                        #altitude=height_to_ground, weather=weather_data)
+    #axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
+    #axiebump.N_TANGENTIAL = 20
+    loudness = equivarea.run([bump_function, location, width])
 
     return loudness
 
