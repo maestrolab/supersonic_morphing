@@ -81,7 +81,7 @@ plt.plot(temperatures['Step-3'],
          displacements['Step-3'], 'r', label='Heating')
 plt.title('Displacement')
 plt.legend()
-#plt.show()
+# plt.show()
 
 # loudness plot
 plt.figure()
