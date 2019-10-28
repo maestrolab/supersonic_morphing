@@ -76,7 +76,15 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     all_output.append(output)
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
-    print('A', A-A0)
+    #print('A', A-A0)
+    print('A-A0', max(abs(A-A0)))
+    print('A', max(abs(A)))
+    # store max areas in a text file for plotting later
+    area_output = max(abs(A-A0))
+    fid = open('../data/area/area_elastomer_short_RP_02_EqvA.txt', 'a+')
+    fid.write('%f\n' % area_output)
+    fid.close()
+
     plt.plot(y, A)#, label=str(r))
     #plt.pause(0.05)
     #plt.legend()
@@ -102,15 +110,19 @@ def calculate_loudness(bump_function):  #height_to_ground, weather_data):
     CASE_DIR = "./"  # axie bump case
     PANAIR_EXE = 'panair.exe'
     SBOOM_EXE = 'sboom_windows.dat.allow'
-
-    # Run
-    # axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE) # for standard atmo
-    # untested EquivArea class
+    '''
+    # AxieBump Run
+    # for standard atmo
+    axiebump = AxieBump(CASE_DIR, PANAIR_EXE, SBOOM_EXE, altitude=alt_ft,
+                        deformation='custom', weather='standard')
+    axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
+    axiebump.N_TANGENTIAL = 20
+    '''
+    # EquivArea run
     equivarea = EquivArea(CASE_DIR, SBOOM_EXE, altitude=alt_ft,
                         deformation='custom', weather='standard')#,
                         #altitude=height_to_ground, weather=weather_data)
-    #axiebump.MESH_COARSEN_TOL = 0.00006  # 0.000035
-    #axiebump.N_TANGENTIAL = 20
+
     loudness = equivarea.run([bump_function, location, width])
 
     return loudness
@@ -122,16 +134,16 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50S.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_elastomer_short_RP_02.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
-''' Temporary comment so I don't have to dos2unix the weather stuff too
+
 # Weather inputs
 day = '18'
 month = '06'
 year = '2018'
 hour = '12'
-lat = 34
-lon = -118
+lat = 40
+lon = -80
 alt_ft = 45000
 
 # Extracting data from database
@@ -144,7 +156,7 @@ weather_data = w_data[key]
 # Height to ground (HAG)
 index = list(w_data.keys()).index(key)
 height_to_ground = altitudes[index] / 0.3048
-'''
+
 # abaqus data manipulation
 Z, X, Y = np.unique(data['COORD']['Step-1'][0], axis=1).T
 U3, U1, U2 = data['U']['Step-1'][0].T
@@ -187,7 +199,7 @@ for step in steps:
         Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5,
                             Y + U2 + .5, Y[1:] + dY + .5))
         Z = np.concatenate((Z[:-1], Z[:-1], Z + U3, Z[1:]))
-
+        # FIXME: check model with xx-10.5 to put at same location as John
         loudness_i = calculate_loudness(lambda xx: calculate_radius(xx-12.5,
                                                                     X=X, Y=Y,
                                                                     Z=Z, nx=nx,
@@ -196,7 +208,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple_fix1_noTE_50S_EqvAtest.p', 'wb')
+f = open('../data/loudness/loudness_elastomer_short_RP_02_EqvA.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -254,5 +266,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_fix1_noTE_50S_EqvAtest.p', 'wb') as fid:
+with open('../data/images/3Dpicture_elastomer_short_RP_02_EqvA.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
