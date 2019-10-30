@@ -74,6 +74,13 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     A, output = calculating_area(X, Y, Z, y, nx)
     #print(A)
     all_output.append(output)
+    '''
+    # Removing sections of area increase
+    for i in range(len(A)):
+        if A[i] > A0:
+            A[i] = A0
+    '''
+
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
     #print('A', A-A0)
@@ -81,7 +88,7 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     print('A', max(abs(A)))
     # store max areas in a text file for plotting later
     area_output = max(abs(A-A0))
-    fid = open('../data/area/area_elastomer_short_RP_02_EqvA.txt', 'a+')
+    fid = open('../data/area/area_small_simple_noTE_ps_Ball_10s_EqvA.txt', 'a+')
     fid.write('%f\n' % area_output)
     fid.close()
 
@@ -134,7 +141,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_elastomer_short_RP_02.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_ps_Ball_10s.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 # Weather inputs
@@ -160,7 +167,18 @@ height_to_ground = altitudes[index] / 0.3048
 # abaqus data manipulation
 Z, X, Y = np.unique(data['COORD']['Step-1'][0], axis=1).T
 U3, U1, U2 = data['U']['Step-1'][0].T
-# U3, U1, U2 = 0, 0, 0
+'''
+# Removing positive displacements (smoothing curves) - didn't do anything...
+for i in range(len(U1)):
+    if U1[i] > 0:
+        U1[i] = 0
+    if U2[i] > 0:
+        U2[i] = 0
+    if U3[i] > 0:
+        U3[i] = 0
+'''
+
+#U3, U1, U2 = 0, 0, 0
 Z = -Z
 U3 = -U3
 
@@ -192,6 +210,7 @@ for step in steps:
     #i = 18
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
+        #U3, U1, U2 = 0, 0, 0
         Z = -Z
         U3 = - U3
         # Calculate morphed area
@@ -208,12 +227,13 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_elastomer_short_RP_02_EqvA.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_noTE_ps_Ball_10s_EqvA.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
 pickle.dump(all_output, f)
 f.close()
+
 
 # showing area plots from calculate_radius function
 plt.show()
@@ -266,5 +286,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_elastomer_short_RP_02_EqvA.p', 'wb') as fid:
+with open('../data/images/3Dpicture_small_simple_noTE_ps_Ball_10s_EqvA.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)

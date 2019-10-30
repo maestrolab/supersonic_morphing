@@ -13,6 +13,8 @@ loudness_filenames = ['loudness_small_simple_noTE_50S_EqvA_weather1',
                       'loudness_small_simple_noTE_50S_EqvA_weather2',
                       'loudness_small_simple_noTE_50S_EqvA_weather3',
                       'loudness_small_simple_noTE_50S_EqvA_weather4']
+                     #['loudness_small_simple_noTE_50S_EqvAtest',
+                     # 'loudness_small_simple_fix1_noTE_50S']
 
 legend_labels = ['34 lat, -118 lon',
                  '36 lat, -105 lon',
@@ -20,7 +22,7 @@ legend_labels = ['34 lat, -118 lon',
                  '40 lat, -80 lon']
 
 color = ['r','b']
-colors = ['m', 'g', 'c', 'y']
+colors = ['c', 'y', 'm', 'g']
 marker = ['', '--', '.-', '-.']
 
 plt.figure()

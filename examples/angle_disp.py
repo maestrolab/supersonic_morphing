@@ -15,7 +15,7 @@ f.close()
 # convert outputs pickle file to unix file endings using dos2unix.py in data
 # folder
 
-# Displacement data from the midpoint
+# Displacement data from the mid-line
 f = open('../data/abaqus_outputs/line_outputs_small_simple_noTE_50S.p', 'rb')  #
 line_data = pickle.load(f, encoding='latin1')
 f.close()
@@ -23,7 +23,7 @@ f.close()
 displacements = {}
 temperatures = {}
 plt.figure()
-# I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
+# Get the displacement and temperature data along the line for each increment
 steps = ['Step-2', 'Step-3']
 U0 = np.linalg.norm(line_data['U'][steps[0]][0])
 for step in steps:
@@ -36,6 +36,7 @@ for step in steps:
         temperatures[step].append(line_data['NT11'][step][i])
 
     theta = np.linspace(0, 90, len(displacements[step]))
+    # Plot the displacement along the line against the angle
     plt.plot(theta, displacements[step])
 
 plt.show()
