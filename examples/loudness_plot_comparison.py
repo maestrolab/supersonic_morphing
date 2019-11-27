@@ -50,6 +50,8 @@ for j in range(len(loudness_filenames)):
 
         plt.plot(temperatures[step][:len(loudness[step])],
                  loudness[step], colors[j])
+        print(max(np.array(loudness[step])))
+        print(min(np.array(loudness[step])))
         k += 1
     plt.plot([], [], colors[j], label=legend_labels[j])
 

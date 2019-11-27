@@ -80,7 +80,6 @@ def calculate_radius(y, X, Y, Z, nx, A0):
         if A[i] > A0:
             A[i] = A0
     '''
-
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
     #print('A', A-A0)
@@ -88,7 +87,7 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     print('A', max(abs(A)))
     # store max areas in a text file for plotting later
     area_output = max(abs(A-A0))
-    fid = open('../data/area/area_small_simple_noTE_ps_Ball_10s_EqvA.txt', 'a+')
+    fid = open('../data/area/area_small_simple_withTE_100S_01_EqvA.txt', 'a+')
     fid.write('%f\n' % area_output)
     fid.close()
 
@@ -141,7 +140,7 @@ nx = 50
 ny = 20
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
-f = open('../data/abaqus_outputs/outputs_small_simple_noTE_ps_Ball_10s.p', 'rb')  #
+f = open('../data/abaqus_outputs/outputs_small_simple_withTE_100S_01.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 
 # Weather inputs
@@ -152,7 +151,7 @@ hour = '12'
 lat = 40
 lon = -80
 alt_ft = 45000
-
+'''
 # Extracting data from database
 alt_m = alt_ft * 0.3048
 w_data, altitudes = process_data(day, month, year, hour, alt_m,
@@ -163,7 +162,7 @@ weather_data = w_data[key]
 # Height to ground (HAG)
 index = list(w_data.keys()).index(key)
 height_to_ground = altitudes[index] / 0.3048
-
+'''
 # abaqus data manipulation
 Z, X, Y = np.unique(data['COORD']['Step-1'][0], axis=1).T
 U3, U1, U2 = data['U']['Step-1'][0].T
@@ -227,7 +226,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_small_simple_noTE_ps_Ball_10s_EqvA.p', 'wb')
+f = open('../data/loudness/loudness_small_simple_withTE_100S_01_EqvA.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -286,5 +285,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_small_simple_noTE_ps_Ball_10s_EqvA.p', 'wb') as fid:
+with open('../data/images/3Dpicture_small_simple_withTE_100S_01_EqvA.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)
