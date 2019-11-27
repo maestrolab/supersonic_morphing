@@ -35,7 +35,7 @@ for step in steps:
                                    line_data['U'][step][i]))  # - U0)
         temperatures[step].append(line_data['NT11'][step][i])
 
-    theta = np.linspace(0, 90, len(displacements[step]))
+    theta = np.linspace(0, 45, len(displacements[step]))
     # Plot the displacement along the line against the angle
     plt.plot(theta, displacements[step])
 
