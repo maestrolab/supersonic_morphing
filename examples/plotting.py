@@ -8,7 +8,11 @@ from scipy.signal import savgol_filter
 
 
 # Loudness data from loudness_abaqus.py
+<<<<<<< HEAD
 f = open('../data/loudness/loudness_elastomer_short_RP_02_EqvA_flattest.p', 'rb')
+=======
+f = open('../data/loudness/loudness_small_simple_fix1_noTE_50S.p', 'rb')
+>>>>>>> 3cb27095d89608716e28592bee37303378b3c8e5
 loudness = pickle.load(f)
 f.close()
 
@@ -22,11 +26,15 @@ f.close()
 # folder
 
 # Displacement data for the whole surface
+<<<<<<< HEAD
 f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50S.p', 'rb')  #
+=======
+f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50s.p', 'rb')  #
+>>>>>>> 3cb27095d89608716e28592bee37303378b3c8e5
 data = pickle.load(f, encoding='latin1')
 f.close()
 # Displacement data from the midpoint
-f = open('../data/abaqus_outputs/mid_outputs_elastomer_short_RP_02.p', 'rb')  #
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE_50s.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
@@ -44,7 +52,7 @@ for step in steps:
                                    mid_data['U'][step][i]))  # - U0)
         temperatures[step].append(mid_data['NT11'][step][i])
 
-
+print(displacements['Step-2'])
 label2 = 'Cooling'
 label3 = 'Heating'
 '''
