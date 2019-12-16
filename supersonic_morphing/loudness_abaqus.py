@@ -46,7 +46,7 @@ def calculating_area(X, Y, Z, y0_list, nx):
     #                              method='cubic')
 
     # change x to theta for even spacing
-    theta = np.linspace(0, np.pi, nx)
+    theta = np.linspace(0, np.pi/2, nx)
     x_solution = np.sin(theta) * 0.6
     y_solution = np.zeros(x_solution.shape)
     z_solution = np.zeros(x_solution.shape)
@@ -74,12 +74,10 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     A, output = calculating_area(X, Y, Z, y, nx)
     #print(A)
     all_output.append(output)
-    '''
     # Removing sections of area increase
     for i in range(len(A)):
         if A[i] > A0:
             A[i] = A0
-    '''
     sign = np.sign(A-A0)
     r = np.sqrt(sign*(A-A0)/np.pi)
     #print('A', A-A0)
@@ -87,7 +85,7 @@ def calculate_radius(y, X, Y, Z, nx, A0):
     print('A', max(abs(A)))
     # store max areas in a text file for plotting later
     area_output = max(abs(A-A0))
-    fid = open('../data/area/area_noPos_test.txt', 'a+')
+    fid = open('../data/area/area_elastomer_RP_02_EqvA_noPos2.txt', 'a+')
     fid.write('%f\n' % area_output)
     fid.close()
 
@@ -136,8 +134,8 @@ def calculate_loudness(bump_function):  #height_to_ground, weather_data):
 
 all_output = []
 mach = 1.6
-nx = 50
-ny = 20
+nx = 400
+ny = 160
 # if "_pickle.UnpicklingError: the STRING opcode argument must be quoted" error,
 # convert outputs pickle file to unix file endings using dos2unix.py in data folder
 f = open('../data/abaqus_outputs/outputs_elastomer_short_RP_02.p', 'rb')  #FIXME
@@ -202,38 +200,28 @@ print(A0)
 
 A0 = A0[0]
 # I've been testing step 3 (heating step) with recent runs (..._noTE_... .p)
-steps = ['Step-3']#, 'Step-3']
+steps = ['Step-2', 'Step-3']
 loudness = {}
 plt.figure(figsize=(12,6))
 #plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b'])))
 # Function loop
 for step in steps:
     loudness[step] = []
-    for i in range(0,1):#range(len(data['COORD'][step])): #range(6,12): #
+    for i in range(len(data['COORD'][step])): #range(6,12): #
     #i = 18
         Z, X, Y = np.unique(data['COORD'][step][i], axis=1).T
         U3, U1, U2 = data['U'][step][i].T
         #U3, U1, U2 = 0, 0, 0
-        # Removing positive displacements (smoothing curves) - didn't do anything...
-        xcount = 0
-        ycount = 0
-        zcount = 0
-        # for j in range(len(U1)):
-        #     if U1[j] > 0.0:
-        #         xcount += 1
-        #         X[j] = X[j] - U1[j]
-        #         print('X', xcount)
-        #     if U2[j] > 0.0:
-        #         ycount += 1
-        #         Y[j] = Y[j] - U2[j]
-        #         print('Y', ycount)
-        #     if U3[j] > 0.0:
-        #         zcount += 1
-        #         Z[j] = Z[j] - U3[j]
-        #         print('Z', zcount)
-        print(len(U1))
+        # Removing positive displacements (smoothing curves)
+        for j in range(len(U1)):
+            if U1[j] > 0.0:
+                U1[j] = 0.0
+            if U2[j] > 0.0:
+                U2[j] = 0.0
+            if U3[j] > 0.0:
+                U3[j] = 0.0
         Z = -Z
-        U3 = - U3
+        U3 = -U3
         # Calculate morphed area
         X = np.concatenate((X[:-1], X[:-1], X+U1, X[1:]))
         Y = np.concatenate((Y[:-1] - 2*dY + .5, Y[:-1] - dY + .5,
@@ -248,7 +236,7 @@ for step in steps:
         print(step, i, loudness_i)
 
 # MOST IMPORTANT DATA STORAGE FILE
-f = open('../data/loudness/loudness_noPos_test.p', 'wb')
+f = open('../data/loudness/loudness_elastomer_short_RP_02_EqvA_noPos2.p', 'wb')
 pickle.dump(loudness, f)
 f.close()
 f = open('../data/abaqus_outputs/output.p', 'wb')
@@ -261,13 +249,13 @@ plt.show()
 
 # plotting loudness vs time
 plt.figure()
-# plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
-#          loudness['Step-2'], label='Heating')
+plt.plot(data['Time']['Step-2'][:len(loudness['Step-2'])],
+         loudness['Step-2'], label='Heating')
 plt.plot(data['Time']['Step-3'][:len(loudness['Step-3'])],
          loudness['Step-3'], label='Cooling')
 #'''
 plt.legend()
-#plt.show()
+plt.show()
 
 # Area vs location plot of last increment
 y0_list = np.linspace(-1.5, 2, ny)
@@ -277,7 +265,7 @@ plt.figure()
 plt.plot(y0_list, A)
 plt.ylabel('Area along Mach Cone')
 plt.xlabel('Distance along aircraft')
-#plt.show()
+plt.show()
 
 # Surface Plots
 fig = plt.figure()
@@ -287,7 +275,7 @@ x, y, z = output.reshape(nx*ny, 3).T
 ax.scatter(x, y, z, c='r')
 plt.xlabel('X')
 plt.ylabel('Y')
-#plt.show()
+plt.show()
 
 # 3D components for display in plotting.py
 pic_outputs = {}
@@ -307,5 +295,5 @@ pic_outputs['xo'] = xo
 pic_outputs['yo'] = yo
 pic_outputs['zo'] = zo
 
-with open('../data/images/3Dpicture_noPos_test.p', 'wb') as fid:
+with open('../data/images/3Dpicture_elatomer_RP_02_EqvA_noPos2.p', 'wb') as fid:
     pickle.dump(pic_outputs, fid)

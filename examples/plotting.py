@@ -8,7 +8,7 @@ from scipy.signal import savgol_filter
 
 
 # Loudness data from loudness_abaqus.py
-f = open('../data/loudness/loudness_elastomer_short_RP_02_EqvA_flattest.p', 'rb')
+f = open('../data/loudness/loudness_small_simple_noTE_50s_EqvA_noPos2.p', 'rb')
 loudness = pickle.load(f)
 f.close()
 
@@ -26,7 +26,7 @@ f = open('../data/abaqus_outputs/outputs_small_simple_noTE_50S.p', 'rb')  #
 data = pickle.load(f, encoding='latin1')
 f.close()
 # Displacement data from the midpoint
-f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE_50s.p', 'rb')  #
+f = open('../data/abaqus_outputs/mid_outputs_small_simple_noTE_50S.p', 'rb')  #
 mid_data = pickle.load(f, encoding='latin1')
 f.close()
 
@@ -73,19 +73,39 @@ plt.legend()
 plt.show()
 '''
 
+# equivalent area plot
+f = open('../data/area/area_small_simple_noTE_50s_EqvA_noPos2.txt', 'r')
+aeq = f.read().split()
+f.close()
+print(len(aeq))
+print(len(aeq[len(displacements['Step-2']):-1]))
+aeq_num = []
+for i in range(len(aeq)):
+    aeq_num.append(float(aeq[i]))
+plt.figure()
+ax = plt.axes()
+plt.plot(temperatures['Step-2'],
+         aeq_num[0:len(displacements['Step-2'])], 'b', label='Cooling')
+plt.plot(temperatures['Step-3'],
+         aeq_num[(len(displacements['Step-2'])-1):-1], 'r', label='Heating')
+plt.title('Equivalent Area')
+plt.legend()
+plt.xlabel('Temperature, K')
+plt.ylabel('Equivalent Area (A_eq), m^2')
+#ax.set_ylim(0, 0.0025)
+# plt.show()
+
 # displacement plot
 plt.figure()
 ax = plt.axes()
 plt.plot(temperatures['Step-2'],
-         displacements['Step-2'], 'c', label='Cooling')
+         displacements['Step-2'], 'b', label='Cooling')
 plt.plot(temperatures['Step-3'],
-         displacements['Step-3'], 'c', label='Heating')
+         displacements['Step-3'], 'r', label='Heating')
 plt.title('Displacement')
 plt.legend()
 plt.xlabel('Temperature, K')
 plt.ylabel('Displacement, m')
-ax.set_ylim(0, 0.0025)
-# plt.show()
 
 # loudness plot
 plt.figure()

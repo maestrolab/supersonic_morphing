@@ -32,6 +32,17 @@ U0 = np.linalg.norm(line_data['U'][steps[0]][0][0])
 #print(line_data['COORD'][steps[0]][0][0])
 #STAAAAHP
 
+# Removing side bumps
+# print(line_data['U']['Step-2'][0][0])
+# U3, U1, U2 = line_data['U']['Step-2'][0].T
+# for j in range(len(U1)):
+#     if U1[j] > 0.0:
+#         X[j] = X[j] - U1[j]
+#     if U2[j] > 0.0:
+#         Y[j] = Y[j] - U2[j]
+#     if U3[j] > 0.0:
+#         Z[j] = Z[j] - U3[j]
+
 temperature = []
 for step in steps:
     for inc in range(len(line_data['U'][step])):
@@ -39,12 +50,22 @@ for step in steps:
         displacements[step] = []
         x_coords[step] = []
         for j in range(len(line_data['U'][step][inc])):
+            # Removing side bumps
+            U3, U1, U2 = line_data['U'][step][inc][j].T
+            if U3 > 0:
+                line_data['U'][step][inc][j][0] = 0
+            if U1 > 0:
+                line_data['U'][step][inc][j][1] = 0
+            if U2 > 0:
+                line_data['U'][step][inc][j][2] = 0
+                #print(line_data['U'][step][inc][j])
+
             x_coords[step].append(line_data['COORD'][step][inc][j][0])
             displacements[step].append(np.linalg.norm(line_data['U'][step][inc][j]))
         #print(displacements[step])
         temperature.append(line_data['NT11'][step][inc][0])
 
-        theta = np.linspace(0, 45, len(displacements[step]))
+        theta = np.linspace(0, 90, len(displacements[step]))
 
         # Plot the displacement along the line against the angle
         #print(displacements[step])
